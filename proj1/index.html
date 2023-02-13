@@ -49,11 +49,11 @@
             <table style="width:100%;">
               <tr>
                 <td align="center">
-                  <img src="images/t1_img1.png" align="middle" width="50%;" />
+                  <img src="./images/t1_img1.png" align="middle" width="50%;" />
                   <figcaption align="middle">A point to the right of the line will return a <b>NEGATIVE</b> value from the <code>line_equation</code> function.</figcaption>
                 </td>
                 <td align="center">
-                  <img src="images/t1_img2.png" align="middle" width="50%;" />
+                  <img src="./images/t1_img2.png" align="middle" width="50%;" />
                   <figcaption align="middle">A point to the left of the line will return a POSITIVE value from the <code>line_equation</code> function.</figcaption>
                 </td>
               </tr>
@@ -66,7 +66,7 @@
 
           <div align="middle">
             <table style="width:100%;">
-              <img src="images/t1_img3.png" align="middle" width="50%;" />
+              <img src="./images/t1_img3.png" align="middle" width="50%;" />
               <figcaption align="middle">The pixel inspector is placed at the right tip of the red centre triangle. Some aliasing artifacts are visible due to the low sampling rate of this initial implementation.</figcaption>
             </table>
           </div>
@@ -113,21 +113,21 @@
             <table style="width:100%;">
               <tr>
                 <td align="center">
-                  <img src="images/t2_img1.png" align="middle" width="90%;" />
+                  <img src="./images/t2_img1.png" align="middle" width="90%;" />
                   <figcaption align="middle">Supersampling rate of 1</figcaption>
                 </td>
                 <td align="center">
-                  <img src="images/t2_img4.png" align="middle" width="90%;" />
+                  <img src="./images/t2_img4.png" align="middle" width="90%;" />
                   <figcaption align="middle">Supersampling rate of 4</figcaption>
                 </td>
               </tr>
               <tr>
                 <td align="center">
-                  <img src="images/t2_img9.png" align="middle" width="90%" />
+                  <img src="./images/t2_img9.png" align="middle" width="90%" />
                   <figcaption align="middle">Supersampling rate of 9</figcaption>
                 </td>
                 <td align="center">
-                  <img src="images/t2_img16.png" align="middle" width="90%;" />
+                  <img src="./images/t2_img16.png" align="middle" width="90%;" />
                   <figcaption align="middle">Supersampling rate of 16</figcaption>
                 </td>
               </tr>
@@ -144,7 +144,7 @@
           <p>In this task, we implement three transformations defined by the SVG <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/transform" target="_blank" style="font-weight: bold;">specification</a>: translate, rotate, and scale. These linear operations to transform an SVG element are represented as 3x3 matrices. We set the last row of each transformation matrix to <code>[0 0 1]</code> because we use homogeneous coordinates.</p>
           <p>The image using transformation is shown below.</p>
           <div align="center">
-            <img src="images/task_3.png" align="middle" width="30%;" />
+            <img src="./images/task_3.png" align="middle" width="30%;" />
             <figcaption align="middle">Sample SVG using transformations.</figcaption>
           </div>
 
@@ -155,26 +155,26 @@
           <p>In this task, we implement barycentric coordinates. Barycentric coordinates represent points <code>(x, y)</code> inside a triangle in terms of 3 scalar values: <code>alpha</code>, <code>beta</code>, and <code>gamma</code>. If the weights add up to 1, then the point <code>(x, y)</code> is inside the triangle. An example triangle with barycentric coordinates is shown in the image below.</p>
 
           <div align="center">
-            <img src="images/task_4_barycentric_coordinate_triangle.png" align="middle" width="30%;" />
+            <img src="./images/task_4_barycentric_coordinate_triangle.png" align="middle" width="30%;" />
             <figcaption align="middle">Barycentric coordinate (x, y) inside a triangle ABC.</figcaption>
           </div>
 
           <p>Barycentric coordinates linearly interpolate values from 3 triangle vertices. If a vertex represents a specific color, the <code>alpha</code>, <code>beta</code>, and <code>gamma</code> represent proportional color weights. As a result, the color inside a triangle is linearly interpolated at each point, proportionally to how close the point is to each vertex. We use the line equations from Task 1 to check if a point is inside a triangle and to find the numeric values of <code>alpha</code>, <code>beta</code>, and <code>gamma</code>. We use the equations shown in the image below.</p>
           <div align="center">
-            <img src="images/task_4_equations.png" align="middle" width="30%;" />
+            <img src="./images/task_4_equations.png" align="middle" width="30%;" />
             <figcaption align="middle">Equations for the barycentric coordinates.</figcaption>
           </div>
 
           <p>The result of linearly interpolating colors inside triangles is shown in the image below.</p>
           <div align="center">
-            <img src="images/task_4_basic.png" align="middle" width="30%;" />
+            <img src="./images/task_4_basic.png" align="middle" width="30%;" />
             <figcaption align="middle">Example SVG using barycentric coordinates (supersample rate 1 per pixel).</figcaption>
           </div>
 
           <p>We also add supersampling to rasterize interpolated color triangles at a higher sampling rate, using the larger <code>sample_buffer</code> described in Part 2. The result of linearly interpolating colors inside triangles with a higher sampling rate is shown in the image below. The border of the color circle is smoother with the higher sampling rate.</p>
 
           <div align="center">
-            <img src="images/task_4_supersampled.png" align="middle" width="30%;" />
+            <img src="./images/task_4_supersampled.png" align="middle" width="30%;" />
             <figcaption align="middle">Example SVG using barycentric coordinates (supersample rate 16 per pixel).</figcaption>
           </div>
 
@@ -189,14 +189,14 @@
           <p>With the bi-linear filtering, we check the 4 closest texels, surrounding the texture point <code>(u, v)</code>. First, we round the <code>(u, v)</code> texel to the nearest integer. Then, we check the upper and lower boundaries and keep all 4 texels inside the texture bounds. Next, we determine the offsets <code>s</code> and <code>t</code>, as shown in the image below.</p>
 
           <div align="center">
-            <img src="images/task_5_bilinear_sampling.png" align="middle" width="30%;" />
+            <img src="./images/task_5_bilinear_sampling.png" align="middle" width="30%;" />
             <figcaption align="middle">Texels surrounding the sample point shown in red.</figcaption>
           </div>
 
           <p>Finally, we linearly interpolate the color values between the two top texels and the two bottom texels, then interpolate between the two resulting colors vertically. The steps for the procedure are shown in the image below. </p>
 
           <div align="center">
-            <img src="images/task_5_lerp.png" align="middle" width="50%;" />
+            <img src="./images/task_5_lerp.png" align="middle" width="50%;" />
             <figcaption align="middle">The procedure steps for linearly interpolating between 4 sample points.</figcaption>
           </div>
 
@@ -206,11 +206,11 @@
             <table style="width:100%;">
               <tr>
                 <td align="center">
-                  <img src="images/task_5_nearest_sample_rate_1.png" align="middle" width="50%;" />
+                  <img src="./images/task_5_nearest_sample_rate_1.png" align="middle" width="50%;" />
                   <figcaption align="middle">Sample texture SVG with nearest-neighbor filtering with supersampling rate 1 per pixel.</figcaption>
                 </td>
                 <td align="center">
-                  <img src="images/task_5_bilinear_sample_rate_1.png" align="middle" width="50%;" />
+                  <img src="./images/task_5_bilinear_sample_rate_1.png" align="middle" width="50%;" />
                   <figcaption align="middle">Sample texture SVG with bi-linear filtering with supersampling rate 1 per pixel.</figcaption>
                 </td>
               </tr>
@@ -225,11 +225,11 @@
             <table style="width:100%;">
               <tr>
                 <td align="center">
-                  <img src="images/task_5_nearest_sample_rate_16.png" align="middle" width="50%;" />
+                  <img src="./images/task_5_nearest_sample_rate_16.png" align="middle" width="50%;" />
                   <figcaption align="middle">Sample texture SVG with nearest-neighbor filtering with supersampling rate 16 per pixel.</figcaption>
                 </td>
                 <td align="center">
-                  <img src="images/task_5_bilinear_sample_rate_16.png" align="middle" width="50%;" />
+                  <img src="./images/task_5_bilinear_sample_rate_16.png" align="middle" width="50%;" />
                   <figcaption align="middle">Sample texture SVG with bi-linear filtering with supersampling rate 16 per pixel.</figcaption>
                 </td>
               </tr>
