@@ -60,7 +60,7 @@
             </table>
           </div>
 
-          <p>The points passed to the <code>rasterize_triangle </code>function are first passed into the <code>line_equation</code> function in order to determine the winding. This initial function call assumes winding to be false, meaning the default normal direction of left is used, implying a counterclockwise winding. If the float returned is positive, then the bool is left unchanged. If the float returned is negative, the bool is set to true, and is used for the remainder of the <code>rasterize_triangles</code> function call. </p>
+          <p>The points passed to the <code>rasterize_triangle </code>function are first passed into the <code>line_equation</code> function in order to determine the winding. This initial function call assumes winding to be false, meaning the default normal direction of left is used, implying a counterclockwise winding. If the float returned is positive, then the bool is left unchanged. If the float returned is negative, the bool is set to true, and is used for the remainder of the <code>rasterize_triangles</code> function calls. </p>
 
           <p>The <code>line_equation </code>function is called 3 more times with the updated bool, and with the points in order P0 & P1, P1 & P2, and P2 & P0. Each time the <code>line_equation</code> function is called, 0.5 is added to the x and y values of the points to ensure accurate sampling at the centre of each screen space point. If all three checks return a positive float, then the screen space point is within the triangle and is rendered using the <code>fill_pixel </code>function.</p>
 
@@ -73,20 +73,20 @@
 
           <h3 align="middle">Part 2: Antialiasing triangles</h3>
 
-          <p>Supersampling is useful as it increases the effective resolution at which sampling and rasterization occurs at. This allows us to capture higher frequency data with less loss and aliasing, as we effectively increase the frequency rate that we sample at. This is most noticeable at the edges of objects, and skinny triangles, as this is where high frequency colour changes are most likely to occur. This is costly however, as it means we are essentially just rendering a scene at a higher resolution.</p>
+          <p>Supersampling is useful as it increases the effective resolution at which sampling and rasterization occurs at. This allows us to capture higher frequency data with less loss and aliasing, as we effectively increase the frequency rate that we sample at. This is most noticeable at the edges of objects as this is where high frequency colour changes are most likely to occur. This is costly however, as it means we are essentially just rendering a scene at a higher resolution.</p>
 
           <p>The rasterization pipeline had to be heavily modified to support this. The following functions were modified, and a brief description of each of their purpose and changes are listed below. The key changes were:</p>
           <ul>
-            <li>The sample buffer had to be increased in size to allow for supersampling. E.g. if the supersample rate was 9, each pixel in the frame buffer corresponds to 9 in the sample buffer, making the sample buffer 9 times the size than the frame buffer.</li>
+            <li>The sample buffer had to be increased in size to allow for supersampling. E.g. if the supersample rate was 9, each pixel in the frame buffer corresponds to 9 in the sample buffer, making the sample buffer 9 times the size of the frame buffer.</li>
             <li>When a rasterization function for a triangle was called, the number of samples taken, and hence line checks done, was repeated the same number of times as the supersample rate. Instead of calling the <code>fill_pixel</code> function, the colour was written directly to the supersample buffer.</li>
-            <li>When <code>resolve_to_framebuffer</code> was called at the end of each frame, the colours were average over an area corresponding to a single screen pixel.</li>
+            <li>When <code>resolve_to_framebuffer</code> was called at the end of each frame, the colours were averaged over an area in the sample buffer corresponding to a single framebuffer or screen pixel.</li>
           </ul>
 
           <h4 align="middle"><code>rgb_framebuffer_target</code></h4>
-          <p>This is an array of length 3 * width * height. Each screen pixel needs 3 spots, 1 for R, G, & B. This is where the final RGB data for the frame buffer is written, and what is ultimately written to the display.</p>
+          <p>This is an array of length 3 * width * height. Each screen pixel needs 3 locations, 1 for R, G, & B. This is where the final RGB data for the frame buffer is written, and what is ultimately written to the display.</p>
 
           <h4 align="middle"><code>sample_buffer</code></h4>
-          <p>Array of length 3 * width * height * <i>sample rate</i>. Supersampling effectively just increases the screen resolution at which we rasterize. As such, we need to create a sample buffer that’s just <code>sample_rate</code> times larger than the regular frame buffer. </p>
+          <p>Array of length 3 * width * height * <i>sample rate</i>. Supersampling effectively just increases the screen resolution at which we rasterize. As such, we need to create a sample buffer that’s <code>sample_rate</code> times larger than the regular frame buffer. </p>
 
           <h4 align="middle"><code>set_sample_rate</code></h4>
           <p>When the user first presses either + or -, <code>set_sample_rate</code> changes the size of the <code>sample_buffer</code> to <code>width * height * sample_rate</code>, and sets all the elements to be of the colour white.</p>
@@ -101,7 +101,7 @@
           <p>When the sample rate is 1, a basic line check and <code>fill_pixel</code> method is implemented, as discussed in Task 1. When the sample rate is greater than 1, each screen space point is then broken into the corresponding number of sample points, and then the same line check logic as Task 1 is done for each of these points. The difference is that if a point passes the line test, then the colour is placed into the sample buffer instead of calling <code>fill_pixel</code> directly. The <code>fill_pixel</code> functionality is replaced and discussed in the <code>resolve_to_framebuffer</code> function.</p>
 
           <h4 align="middle"><code>fill_pixel</code></h4>
-          <p>The <code>fill_pixel</code> function was modified to place the same colour into all corresponding points in the sample buffer if the sampling rate was greater than 1.  This was done so that points and lines would still be rendered correctly with a sampling rate over 1. When the sample rate is greater than 1, other functions that rasterize triangles instead write directly to the sample buffer, bypassing the <code>fill_pixel</code> function. The final <code>fill_pixel</code> functionality is instead included in the <code>resolve_to_framebuffer</code> function, which as described below, fills the pixel in the frame buffer by averaging corresponding points in the sample buffer.</p>
+          <p>The <code>fill_pixel</code> function was modified to place the same colour into all corresponding points in the sample buffer if the sampling rate was greater than 1.  This was done so that points and lines would still be rendered correctly with a sampling rate over 1. When the sample rate is greater than 1, functions that rasterize triangles instead write directly to the sample buffer, bypassing the <code>fill_pixel</code> function. The final <code>fill_pixel</code> functionality is instead included in the <code>resolve_to_framebuffer</code> function, which as described below, fills the pixel in the frame buffer by averaging corresponding points in the sample buffer.</p>
 
           <h4 align="middle"><code>resolve_to_framebuffer</code></h4>
           <p><code>resolve_to_framebuffer</code> is called whenever a frame is updated. For a sample rate of 1, it will take the colours directly from the sample buffer and place it into the frame buffer. For a sample rate over 1, it will instead average the colour over a number of colours in the sample buffer. The colours are summed together over the number of points, which is determined by the sample rate, and then finally written to the framebuffer. </p>
