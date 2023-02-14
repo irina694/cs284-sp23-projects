@@ -253,7 +253,7 @@
 
           <h3 align="middle">Part 6: "Level sampling" with mipmaps for texture mapping</h3>
 
-          <p>For this task, we implement level sampling with mipmaps, used for anti-aliasing texture maps. Level sampling works changing sampling granularity for pixels that are further away on the texture map. Same pixel sampling techniques described in Part 5 are applied to textures sampled with mipmaps. Overall, we implement 6 cases of sampling using 2 types of pixel sampling (nearest and bilinear) and 3 types of map sampling (zero level, nearest, and linear).</p>
+          <p>For this task, we implement level sampling with mipmaps, used for anti-aliasing texture maps. Level sampling works by changing sampling granularity for pixels that are further away on the texture map. Same pixel sampling techniques described in Part 5 are applied to textures sampled with mipmaps. Overall, we implement 6 cases of sampling using 2 types of pixel sampling (nearest and bilinear) and 3 types of map sampling (zero level, nearest, and linear).</p>
 
           <p>First, we calculate the mipmap level based on the given texture, the level sampling method (<code>lsm</code>), and the pixel sampling method (<code>psm</code>). The pixel sampling method is described in Task 5 and can be either nearest or bilinear. The zero-th mipmap sampling level means the full-resolution texture mipmap is used, like in Task 5. With a non-zero level sampling method, we use either the nearest or the linear texture sampling. In the nearest level sampling, we compute the mipmap level and round it to the nearest integer level.</p>
 
@@ -264,51 +264,54 @@
             <figcaption align="middle">The formula to compute mipmap level D.</figcaption>
           </div>
 
-          <p>In the linear level sampling, we compute two adjacent levels (one below and one above) of the floating-point mipmap level. Then, we linearly interpolate between the two adjacent mipmap levels based on a continuous level value. The color in each image pixel is weighted proportionally to where the floating-point level falls.</p>
+          <p>In the linear level sampling, we compute two adjacent levels (one below and one above) of the floating-point mipmap level. Then, we linearly interpolate between the two adjacent mipmap levels based on a continuous level value. The color in each image pixel is weighted proportionally to where the floating-point level falls between two integer levels.</p>
 
           <p>To find the correct mipmap level to use in the sampling, we calculate the derivatives <code>(du/dx, dv/dx)</code> and <code>(du/dy, dv/dy)</code>. We use the discrete version of derivatives and calculate the rate of change in <code>du</code> and <code>dv</code> directions when the image point changes from <code>(x, y)</code> to the points <code>(x + 1, y)</code> and <code>(x, y + 1)</code>. We use barycentric coordinates to find the derivatives. Finally, we scale these derivatives proportionally to the size of the full-resolution texture image.</p>
 
           <p>The 6 images below show the various combinations of pixel and mipmap sampling, where P is the pixel sampling method and L is the mipmap sampling method.</p>
 
-          <div align="middle">
+          <div align="middle" style="width:100%;">
             <table style="width:100%;">
               <tr>
                 <td align="center">
-                  <img src="./images/t6_case1.png" align="middle" width="33.3%;" />
+                  <img src="./images/t6_case1.png" align="middle" width="50%;" />
                   <figcaption align="middle">P = nearest, L = 0</figcaption>
                 </td>
                 <td align="center">
-                  <img src="./images/t6_case2.png" align="middle" width="33.3%;" />
-                  <figcaption align="middle">P = nearest, L = nearest</figcaption>
-                </td>
-                <td align="center">
-                  <img src="./images/t6_case3.png" align="middle" width="33.3%;" />
-                  <figcaption align="middle">P = nearest, L = linear</figcaption>
+                  <img src="./images/t6_case4.png" align="middle" width=50%;" />
+                  <figcaption align="middle">P = bilinear, L = 0</figcaption>
                 </td>
               </tr>
               <tr>
                 <td align="center">
-                  <img src="./images/t6_case4.png" align="middle" width="33.3%;" />
-                  <figcaption align="middle">P = bilinear, L = 0</figcaption>
+                  <img src="./images/t6_case2.png" align="middle" width="50%;" />
+                  <figcaption align="middle">P = nearest, L = nearest</figcaption>
                 </td>
+
                 <td align="center">
-                  <img src="./images/t6_case5.png" align="middle" width="33.3%;" />
+                  <img src="./images/t6_case5.png" align="middle" width="50%;" />
                   <figcaption align="middle">P = bilinear, L = nearest</figcaption>
                 </td>
+              </tr>
+              <tr>
                 <td align="center">
-                  <img src="./images/t6_case6.png" align="middle" width="33.3%;" />
+                  <img src="./images/t6_case3.png" align="middle" width="50%;" />
+                  <figcaption align="middle">P = nearest, L = linear</figcaption>
+                </td>
+                <td align="center">
+                  <img src="./images/t6_case6.png" align="middle" width="50%;" />
                   <figcaption align="middle">P = bilinear, L = linear</figcaption>
                 </td>
               </tr>
             </table>
           </div>
 
-          <p>The tradeoffs between speed, memory usage, and antialiasing power between the three various techniques.</p>
+          <p>The fastest and coarsest technique is using supersampling with 1 sample per pixel and rounding the pixel color and mipmap level to the nearest integer value. However, this technique produces the blurriest image with visible aliasing artifacts. Increasing the supersampling takes longer but reduces antialiasing significantly. In practice, supersampling is not used because of its memory requirements by needing to create a buffer that's N times larger than the image where N is the supersampling rate. Mipmaps are useful to reduce aliasing and they don't take up much more memory. At most, an image with mipmaps fit into a 4/3 of the original memory footprint. If bilinear pixel sampling is used with linear mipmap sampling, the operation to compute a color at a pixel location requires to read values at 8 texels and interpolate between them. The interpolation is computationally expensive and requires 7 linear interpolation computations. However, mipmaps can be pre-computed and stored, so that the interpolation can happen before rendering time.</p>
 
           <p>Using a png file you find yourself, show us four versions of the image, using the combinations of L_ZERO and P_NEAREST, L_ZERO and P_LINEAR, L_NEAREST and P_NEAREST, as well as L_NEAREST and P_LINEAR.
             To use your own png, make a copy of one of the existing svg files in svg/texmap/ (or create your own modelled after one of the provided svg files). Then, near the top of the file, change the texture filename to point to your own png. From there, you can run ./draw and pass in that svg file to render it and then save a screenshot of your results.
             Note: Choose a png that showcases the different sampling effects well. You may also want to zoom in/out, use the pixel inspector, etc. to demonstrate the differences.</p>
-          
+
           <p>Extra credit: If you implemented any extra filtering methods, describe them and show comparisons between your results with the other above methods.</p>
 
 
