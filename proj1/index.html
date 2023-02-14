@@ -37,12 +37,13 @@
 
           <h3 align="middle">Part 1: Rasterizing single-color triangles</h3>
 
-          <p>
-            To avoid sampling every pixel on screen, the bounding box for the given triangle is calculated by taking the smallest <code>x</code> and <code>y</code> value, and largest <code>x</code> and <code>y</code> value. Screen space pixels are only iterated and checked within this bounding box.
+          <p>In this part, we implement single-color triangle rasterization, given an SVG to draw. The <code>draw</code> function delegates its rendering method to the element. Points and lines are rendered pixel by pixel with a provided <code>fill_pixel</code> function. The triangles are rendered using the triangle rasterization function given coordinates for the three triangle vertices. More complex shapes, like polygons, are rendered with composite triangles.</p>
+
+          <p>Given the three triangle vertices, we first calculate the bounding box for the given triangle to avoid sampling every pixel on screen. We take the smallest <code>x</code> and <code>y</code> value, and largest <code>x</code> and <code>y</code> value. Screen space pixels are only iterated and checked within this bounding box.
           </p>
 
           <p>
-            A helper function called <code>line_equation</code> takes in 3 points as well as a Boolean value that represents the winding (direction of the normal) to be used, and returns a float to indicate the position of the third point in relation to the vector formed from point 0 (P0) to point 1 (P1). The order that the points are passed as arguments to the function determines their numbering as point 0, 1, or 2. By default, the normal is always taken to the left of the vector from P0 to P1. If the winding bool is set to true, meaning a “clockwise” winding, then the normal is instead taken to the right.
+            A helper function called <code>line_equation</code> takes in 3 points as well as a Boolean value that represents the winding (direction of the normal) to be used, and returns a <code>float</code> to indicate the position of the third point in relation to the vector formed from point 0 (P0) to point 1 (P1). The order that the points are passed as arguments to the function determines their numbering as point 0, 1, or 2. By default, the normal is always taken to the left of the vector from P0 to P1. If the winding bool is set to true, meaning a “clockwise” winding, then the normal is instead taken to the right.
           </p>
 
           <div align="middle">
@@ -142,11 +143,22 @@
           <h3 align="middle">Part 3: Transforms</h3>
 
           <p>In this task, we implement three transformations defined by the SVG <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/transform" target="_blank" style="font-weight: bold;">specification</a>: translate, rotate, and scale. These linear operations to transform an SVG element are represented as 3x3 matrices. We set the last row of each transformation matrix to <code>[0 0 1]</code> because we use homogeneous coordinates.</p>
-          <p>The image using transformation is shown below.</p>
+
+          <p>The unchanged image using transformation is shown below.</p>
+
           <div align="center">
             <img src="./images/task_3.png" align="middle" width="30%;" />
             <figcaption align="middle">Sample SVG using transformations.</figcaption>
           </div>
+
+          <p>The updated version of the robot image is shown in the image below.</p>
+
+          <div align="center">
+            <img src="./images/task_3_updated.png" align="middle" width="30%;" />
+            <figcaption align="middle">Updated SVG using transformations.</figcaption>
+          </div>
+
+          <p>We updated the color of the robot to green and changed his arm positions by modifying the SVG transformations in the <code>\svg\transforms\my_robot.svg</code> file. To move the left arm, we added a 90-degree rotation in counter-clockwise direction for the lower part of the arm. To move the right arm from extended position to down position, we added a clockwise 90-degree rotation for both parts of the arm.</p>
 
           <h2 align="middle">Section II: Sampling</h2>
 
