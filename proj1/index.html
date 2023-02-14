@@ -37,7 +37,7 @@
 
           <h3 align="middle">Part 1: Rasterizing single-color triangles</h3>
 
-          <p>In this part, we implement single-color triangle rasterization, given an SVG to draw. The <code>draw</code> function delegates its rendering method to the element. Points and lines are rendered pixel by pixel with a provided <code>fill_pixel</code> function. The triangles are rendered using the triangle rasterization function given coordinates for the three triangle vertices. More complex shapes, like polygons, are rendered with composite triangles.</p>
+          <p>In this part, we implement single-color triangle rasterization, given an SVG to draw. The <code>draw</code> function delegates its rendering method to each element on the screen. For example, points and lines are rendered pixel by pixel with a provided <code>fill_pixel</code> function. The triangles are rendered using the triangle rasterization function given coordinates for the three triangle vertices. More complex shapes, like polygons, are rendered with composite triangles.</p>
 
           <p>Given the three triangle vertices, we first calculate the bounding box for the given triangle to avoid sampling every pixel on screen. We take the smallest <code>x</code> and <code>y</code> value, and largest <code>x</code> and <code>y</code> value. Screen space pixels are only iterated and checked within this bounding box.
           </p>
