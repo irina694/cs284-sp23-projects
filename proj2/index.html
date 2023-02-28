@@ -405,6 +405,9 @@
   <p>
     YOUR RESPONSE GOES HERE
   </p>
+  <p>
+    The most challenging part of implementing the loop subdivion was debugging the <code>flipEdge</code> and <code>splitEdge</code> functions. Tested in isolation, without changing the number of triangles, they seemed to work fine. However, when following the implementation steps, some halfedges were not correctly assigned. Using visual output as a debugging tool, we added a few more print statements to the GUI to display the properties of vertices and edges. We tracked the issue down by following the subdivision on a small example (cube) on one particular vertex that looked out of place. We were able to isolate and locate the issue with our methods that were not re-assigning the vertex pointers after flipping or splitting an edge.
+  </p>
   <br />
 
 
