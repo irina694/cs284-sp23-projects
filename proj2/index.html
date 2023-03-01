@@ -489,6 +489,22 @@
     </table>
   </div>
 
+  <p>In our code, we ignore the vertices and edges that are on the edge (or boundary) of a mesh. Therefore, the number of vertices/edges on the boundary stay the same. Below is a screenshot of the edges after subdivision. </p>
+
+
+  <div align="middle">
+    <table style="width:100%">
+      <tr align="center">
+        <td width="100%">
+          <img src="images/t6_edges.png" align="middle" width="75%" />
+          <figcaption>The <code>beetle.dae</code> mesh edges after subdivision (zoomed in).</figcaption>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <br/>
+
   <b>
     <i>Load dae/cube.dae. Perform several iterations of loop subdivision on the cube. Notice that the cube becomes
     slightly asymmetric after repeated subdivisions. Can you pre-process the cube with edge flips and splits so that
