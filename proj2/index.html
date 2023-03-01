@@ -461,12 +461,12 @@
     <table style="width:100%">
       <tr align="center">
         <td width="50%">
-          <img src="images/t6_beetle_l0.png" align="middle" width="75%" />
-          <figcaption>The <code>beetle.dae</code> mesh before subdivision.</figcaption>
-        </td>
-        <td width="50%">
           <img src="images/t6_shading_before_subdivision.png" align="middle" width="75%" />
           <figcaption>The <code>beetle.dae</code> shading before subdivision.</figcaption>
+        </td>
+        <td width="50%">
+          <img src="images/t6_shading_after_subdivision.png" align="middle" width="75%" />
+          <figcaption>The <code>beetle.dae</code> shading after subdivision.</figcaption>
         </td>
       </tr>
     </table>
@@ -481,20 +481,6 @@
           <img src="images/t6_edges_no_subdivision.png" align="middle" width="75%" />
           <figcaption>The <code>beetle.dae</code> mesh edges before subdivision (zoomed in).</figcaption>
         </td>
-        <td width="50%">
-          <img src="images/t6_shading_after_subdivision.png" align="middle" width="75%" />
-          <figcaption>The <code>beetle.dae</code> mesh edges after subdivision (zoomed in).</figcaption>
-        </td>
-      </tr>
-    </table>
-  </div>
-
-  <p>In our code, we ignore the vertices and edges that are on the edge (or boundary) of a mesh. Therefore, the number of vertices/edges on the boundary stay the same. Below is a screenshot of the edges after subdivision. This effect can be reduced by pre-splitting some edges or placing a new vertex as a mid-point of the boundary edge.</p>
-
-
-  <div align="middle">
-    <table style="width:100%">
-      <tr align="center">
         <td width="100%">
           <img src="images/t6_edges.png" align="middle" width="75%" />
           <figcaption>The <code>beetle.dae</code> mesh edges after subdivision (zoomed in).</figcaption>
@@ -502,6 +488,9 @@
       </tr>
     </table>
   </div>
+
+  <p>In our code, we ignore the vertices and edges that are on the edge (or boundary) of a mesh. Therefore, the number of vertices/edges on the boundary stay the same. Below is a screenshot of the edges after subdivision. This effect can be reduced by pre-splitting some edges or placing a new vertex as a mid-point of the boundary edge.</p>
+  
 
   <br/>
 
