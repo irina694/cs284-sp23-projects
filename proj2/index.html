@@ -425,6 +425,23 @@
 	<br>Once all positions were calculated, edges split, and edges flipped, every vertex was iterated over and given a <code>newPosition</code>.
 	
   </p>
+  <p>
+    At a high-level we follow the algorithm described in the project specification. At each <code>upsample</code> function call, we subdivide the entire mesh by inserting new edges and vertices. Each triangle is split into 4. This operation creates 3 new edge elements, 1 new vertex and 6 halfedges. The old edge being split is labeled as old (represented by black in the figure below). One half of the edge is old and the other half of the edge is new, but is marked as old. To make sure we don't get into an infinite loop of subdividing new edges, we mark these new edges that represent the old edge with a flag <code>isOldHalfedge</code>.
+  </p>
+  <div align="middle">
+    <table style="width:100%">
+      <tr align="center">
+        <td width="100%">
+          <img src="images/t6_algorithm.png" align="middle" width="75%" />
+          <figcaption>The steps of the subdivision algorithm.</figcaption>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <p>One debugging and testing strategy we employed was counting the number of edges, vertices, and triangles, and checking that the number of edges and vertices in the mesh before and after subdivision is consistent with the Euler formula for the number of triangles. Checking the number of elements was one way of ensuring that the subdivision creates the expected number of elements.</p>
+  <p>
+    The most challenging part of implementing the loop subdivion was debugging the <code>flipEdge</code> and <code>splitEdge</code> functions. Tested in isolation, without changing the number of triangles, they seemed to work fine. However, when following the implementation steps, some halfedges were not correctly assigned. Using visual output as a debugging tool, we added a few more print statements to the GUI to display the properties of vertices and edges. We tracked the issue down by following the subdivision on a small example (cube) on one particular vertex that looked out of place. We were able to isolate and locate the issue with our methods that were not re-assigning the vertex pointers after flipping or splitting an edge.
+  </p>
   <br />
 
 
