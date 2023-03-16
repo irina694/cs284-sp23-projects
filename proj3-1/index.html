@@ -127,7 +127,7 @@
         point.
     </h3>
     <p>
-        In Part 2, we implemented Bounding Volume Hierarchy (BVH), to speed up how ray-object intersections are calculated in a scene. BVH is a recursive method to partition objects that alleviates inefficiency of a naive method of checking if a ray intersects every object. Our BVH implementation created a significant speed-up of rendering. Without BVH, the running complexity for calculating a ray-object intersection is O(N). With BVH, the running complexity becomes O(log_2(N)). With BVH, we can render .dae files that are made of hundreds of thousands of triangles within seconds, which were infeasible to render without BVH.
+        In Part 2, we implemented Bounding Volume Hierarchy (BVH), to speed up how ray-object intersections are calculated in a scene. BVH is a recursive method to partition objects that alleviates inefficiency of a naive method of checking if a ray intersects every object. Our BVH implementation created a significant speed-up of rendering. Without BVH, the running complexity for calculating a ray-object intersection is <code>O(N)</code>. With BVH, the running complexity becomes <code>O(log_2(N))</code>. With BVH, we can render .dae files that are made of hundreds of thousands of triangles within seconds, which were infeasible to render without BVH.
     </p>
 
 	<p>We constructed our BVH as follows:</p>
@@ -147,13 +147,13 @@
     </div>
 
 	<p>
-	In the base case, if the number of primitives is less than maximum leaf size, then set the start and end pointers to the node to return.</p>
+	In the base case, if the number of primitives is less than maximum leaf size, we set the start and end pointers of the node to return.</p>
     <p></p>Otherwise, we get the median primitive by dividing the total primitive count by 2. Then, we sort all primitives. This is done by seeing which bounding box axis is the largest, then sorting it along this axis. We created custom functions to compare the centroids of bounding boxes (<code>sortByX</code>, <code>sortByY</code>, and <code>sortByZ</code>, which take the corresponding axis value for the input primitive's centroid, and returns true if the first item is smaller than the second item.</p>
     <p>The downside of this method is that we need to sort all the primitives every recursive call. Although this isn't very efficient, it is necessary because a child bounding box isn't guaranteed to have the same largest axis as its parent.</p>
     <p>Once the list is sorted, we recursively call the <code>construct_bvh</code> function on the left and right side, which become the left and right nodes of the root node. The two halves are created from the sorted list divided at the median primitive.</p>
     <p> Our debugging journey was the following:</p>
     <ul>
-        <li>Took a while to realise that end() iterators point to the element AFTER the end, so no need to add + 1 to the start of te right child bbox func call</li>
+        <li>Took a while to realise that end() iterators point to the element AFTER the end, so no need to add + 1 to the start of the right child bbox func call</li>
         <li>At first, the idea was to take the average value of centroids, but it became clear that it is pretty common for almost all of the centroids in current bounding box to be the same along an axis, meaning that one child would be empty and there would be an infinite loop. Sorting by median means that it is guaranteed that child nodes are equal in terms of number of primitives.</li>
         <li>Used to create a new vector of primitive pointers on heap when at the base case, but realised that sorting in place makes it easier to handle and avoids potential memory leaks.</li>
     </ul>
@@ -455,8 +455,7 @@
 
 
     <h2 align="middle">Part 4: Global Illumination (20 Points)</h2>
-    <!-- Walk through your implementation of the indirect lighting function.
-    Show some images rendered with global (direct and indirect) illumination. Use 1024 samples per pixel.
+   <!--
     Pick one scene and compare rendered views first with only direct illumination, then only indirect illumination. Use 1024 samples per pixel. (You will have to edit PathTracer::at_least_one_bounce_radiance(...) in your code to generate these views.)
     For CBbunny.dae, compare rendered views with max_ray_depth set to 0, 1, 2, 3, and 100 (the -m flag). Use 1024 samples per pixel.
     Pick one scene and compare rendered views with various sample-per-pixel rates, including at least 1, 2, 4, 8, 16, 64, and 1024. Use 4 light rays.
@@ -465,23 +464,26 @@
     <h3>
         Walk through your implementation of the indirect lighting function.
     </h3>
-	<p>FROM THE SPEC:</p>
-	<p>Walk through your implementation of the indirect lighting function.
-		Show some images rendered with global (direct and indirect) illumination. Use 1024 samples per pixel.
-		Pick one scene and compare rendered views first with only direct illumination, then only indirect illumination. Use 1024 samples per pixel. (You will have to edit PathTracer::at_least_one_bounce_radiance(...) in your code to generate these views.)
-		For CBbunny.dae, compare rendered views with max_ray_depth set to 0, 1, 2, 3, and 100 (the -m flag). Use 1024 samples per pixel.
-		Pick one scene and compare rendered views with various sample-per-pixel rates, including at least 1, 2, 4, 8, 16, 64, and 1024. Use 4 light rays.
-		You will probably want to use the instructional machines for the above renders in order to not burn up your own computer for hours.</p>
 
-    <p>
-        YOUR RESPONSE GOES HERE
-    </p>
-    <br>
+    <!-- Walk through your implementation of the indirect lighting function.
+   Show some images rendered with global (direct and indirect) illumination. Use 1024 samples per pixel.-->
+   <p>Global illumination consists of direct and indirect light. The indirect lightning comes from light bouncing off objects in the scene several times before reaching the camera. We implemented the global illumination by adding the zero-bounce (direct) and the at-least-one-bounce radiance (indirect). The zero-bounce radiance displays light directly from the light source. The at-least-one-bounce-radiance collects and displays light by adding radiance from rays bouncing at least once and bouncing multiple times, until a termination condition is reached. We used recursion to implement <code>at_least_one_bounce_radiance</code> and used the Russian Roulette as the unbiased probabilistic termination condition. The Russian Roulette ensures that all rays stop eventually, and the more bounces the rays have, the higher the probability of stopping after the next bounce. We start the probability of stopping as 0.3. The rays also were stopped if they reached their maximum depth, to avoid long termination times.</p>
 
-    <h3>
-        Show some images rendered with global (direct and indirect) illumination. Use 1024 samples per pixel.
-    </h3>
-    <!-- Example of including multiple figures -->
+   <p>Use 1024 samples per pixel.
+       Pick one scene and compare rendered views first with only direct illumination, then only indirect illumination. Use 1024 samples per pixel. (You will have to edit PathTracer::at_least_one_bounce_radiance(...) in your code to generate these views.)
+       For CBbunny.dae, compare rendered views with max_ray_depth set to 0, 1, 2, 3, and 100 (the -m flag). Use 1024 samples per pixel.
+       Pick one scene and compare rendered views with various sample-per-pixel rates, including at least 1, 2, 4, 8, 16, 64, and 1024. Use 4 light rays.
+       You will probably want to use the instructional machines for the above renders in order to not burn up your own computer for hours.</p>
+
+   <p>
+       YOUR RESPONSE GOES HERE
+   </p>
+   <br>
+
+   <h3>
+       Show some images rendered with global (direct and indirect) illumination. Use 1024 samples per pixel.
+   </h3>
+   <!-- Example of including multiple figures -->
     <div align="middle">
         <table style="width:100%">
             <tr align="center">
