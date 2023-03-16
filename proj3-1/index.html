@@ -115,22 +115,6 @@
     <h3>
         Show images with normal shading for a few small .dae files.
     </h3>
-    <!-- Example of including multiple figures -->
-    <div align="middle">
-        <table style="width:100%">
-            <tr align="center">
-                <td>
-                    <img src="images/your_file.png" align="middle" width="400px"/>
-                    <figcaption>example1.dae</figcaption>
-                </td>
-                <td>
-                    <img src="images/your_file.png" align="middle" width="400px"/>
-                    <figcaption>example2.dae</figcaption>
-                </td>
-            </tr>
-        </table>
-    </div>
-    <br>
 
 
     <h2 align="middle">Part 2: Bounding Volume Hierarchy (20 Points)</h2>
@@ -148,8 +132,19 @@
 
 	<p>We constructed our BVH as follows:</p>
 
-	<p>We construct the BVH recursively. At the start of the rendering, the lists of primitives are empty. We then construct the root node and point its <code>start</code> and <code>end</code> properties to the given empty lists of primitives. We then compute the bounding boxes for all primitives and count how many primitives there are.
+	<p>We construct the BVH recursively. At the start of the rendering, the lists of primitives are empty. We then construct the root node and point its <code>start</code> and <code>end</code> properties to the given empty lists of primitives. We then compute the bounding boxes for all primitives and count how many primitives there are. The figure below shows an example of the BVH, visualized on the <code>cow.dae</code> file. The left part of the BVH is highlighted in red.
 	</p>
+
+    <div align="middle">
+        <table style="width:100%">
+            <tr align="center">
+                <td>
+                    <img src="images/t2_bvh.png" align="middle" width="50%;"/>
+                    <figcaption>The <code>cow.dae</code> in BVH Visualizer mode</figcaption>
+                </td>
+            </tr>
+        </table>
+    </div>
 
 	<p>
 	In the base case, if the number of primitives is less than maximum leaf size, then set the start and end pointers to the node to return.</p>
@@ -187,11 +182,172 @@
 	<h3>
 	  Compare rendering times on a few scenes with moderately complex geometries with and without BVH acceleration. Present your results in a one-paragraph analysis.
 	</h3>
-	<p>
-		maxplanck
-		building
-		bunny
-	</p>
+	<p>To compare the efficiency of using the BVH, we timed several images being rendered by the same number of rays, using the same number of threads. Starting with the simplest cube, which has only 12 primitives, there was no speedup. The time to sort the primitives in this small case offset the speedup in traversing the BVH tree. As expected, we see a significant speedup for more complex scenes. Some scenes are divided more evenly, like <code>maxplanck.dae</code> or <code>dragon.dae</code>. The exception where speedup was not as big is <code>building.dae</code>, a scene with a large number of primitives concentrated in one part of the scene.
+
+
+    <table border="1px solid black;">
+            <thead>
+                <tr>
+                    <td>
+                        Filename
+                    </td>
+                    <td>
+                        # of primitives
+                    </td>
+                    <td>
+                        # of rays
+                    </td>
+                    <td>
+                        # threads
+                    </td>
+                    <td>
+                        Resolution (pixels)
+                    </td>
+                    <td>
+                        With BVH (seconds)
+                    </td>
+                    <td>
+                        Without BVH (seconds)
+                    </td>
+                    <td>
+                        Speedup (times)
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    cube.dae
+                </td>
+                <td>
+                    12
+                </td>
+                <td>
+                    176,768
+                </td>
+                <td>
+                    8
+                </td>
+                <td>
+                    800x600
+                </td>
+                <td>
+                    0.093072
+                </td>
+                <td>
+                    0.091904
+                </td>
+                <td>
+                    0.9875
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    bunny.dae
+                </td>
+                <td>
+                    33,696
+                </td>
+                <td>
+                    418,721
+                </td>
+                <td>
+                    8
+                </td>
+                <td>
+                    800x600
+                </td>
+                <td>
+                    0.313027
+                </td>
+                <td>
+                    32.3483
+                </td>
+                <td>
+                    103.3403
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    building.dae
+                </td>
+                <td>
+                    39,506
+                </td>
+                <td>
+                    205,141
+                </td>
+                <td>
+                    8
+                </td>
+                <td>
+                    800x600
+                </td>
+                <td>
+                    0.33361
+                </td>
+                <td>
+                    9.64124
+                </td>
+                <td>
+                    28.8997
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    maxplanck.dae
+                </td>
+                <td>
+                    50,801
+                </td>
+                <td>
+                    296,593
+                </td>
+                <td>
+                    8
+                </td>
+                <td>
+                    800x600
+                </td>
+                <td>
+                    0.422581
+                </td>
+                <td>
+                    64.7466
+                </td>
+                <td>
+                    153.2170
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    dragon.dae
+                </td>
+                <td>
+                    100,012
+                </td>
+                <td>
+                    Rays
+                </td>
+                <td>
+                    8
+                </td>
+                <td>
+                    800x600
+                </td>
+                <td>
+                    0.826029
+                </td>
+                <td>
+                    108.905
+                </td>
+                <td>
+                    131.8416
+                </td>
+            </tr>
+            </tbody>
+    </table>
+
 	<br>
 
     <h2 align="middle">Part 3: Direct Illumination (20 Points)</h2>
