@@ -115,6 +115,7 @@
     <h3>
         Show images with normal shading for a few small .dae files.
     </h3>
+	
     <!-- Example of including multiple figures -->
     <div align="middle">
         <table style="width:100%">
@@ -143,33 +144,41 @@
         point.
     </h3>
     <p>
-        In Part 2, we implemented Bounding Volume Hierarchy (BVH), to speed up how ray-object intersections are calculated in a scene. BVH is a recursive method to partition objects in the scene in such a way that reduces the time it takes to calculate ray-object intersections. Our BVH implementation created a significant speed-up of rendering. Without BVH, the running complexity for calculating a ray-object intersection is O(N). With BVH, the running complexity becomes O(log_2(N)). With BVH, we can render .dae files that are made of hundreds of thousands of triangles within seconds, which were infeasible to render without BVH.
+        In Part 2, we implemented Bounding Volume Hierarchy (BVH), to speed up how ray-object intersections are calculated in a scene. BVH is a recursive method to partition objects that alleviates inefficiency of a naive method of checking if a ray intersects every object. Our BVH implementation created a significant speed-up of rendering. Without BVH, the running complexity for calculating a ray-object intersection is O(N). With BVH, the running complexity becomes O(log_2(N)). With BVH, we can render .dae files that are made of hundreds of thousands of triangles within seconds, which were infeasible to render without BVH.
     </p>
 
 	<p>We constructed our BVH as follows:</p>
 
-	<p></p>
+	<p>We construct the BVH recursively. At the start of the rendering, the lists of primitives are empty. We then construct the root node and point its <code>start</code> and <code>end</code> properties to the given empty lists of primitives. We then compute the bounding boxes for all primitives and count how many primitives there are. The figure below shows an example of the BVH, visualized on the <code>cow.dae</code> file. The left part of the BVH is highlighted in red.
+	</p>
+
+    <div align="middle">
+        <table style="width:100%">
+            <tr align="center">
+                <td>
+                    <img src="images/t2_bvh.png" align="middle" width="50%;"/>
+                    <figcaption>The <code>cow.dae</code> in BVH Visualizer mode</figcaption>
+                </td>
+            </tr>
+        </table>
+    </div>
 
 	<p>
-	Cecil's Notes:
-	- Similar to initial imp, gather all primitives between start and end, construct bbox, count num of prims
-	- Create BVHnode to return
-	- BASE CASE: if num of prims is less than max leaf size then set the start and end pointers for node
-	- Otherwise, get the middle_idx by divving prim count by 2
-	- Then sort all prims. This is done by seeing which axis is the largest, then sorting it along this axis
-		- Had to write a custom compare function for the cpp sort function call, this simply takes the corresponding axis value for the input primitive's centroid, returns true if item 0 smaller than 1
-		- DOWNSIDE: Need to sort all the prims every recursive call, this isn't amazingly efficient but a child bbox isn't guaranteed to have the same largest axis as its parent.
-	- Once sorted, recursively call the construct_bvh function
-	- DEBUGGING JOURNEY:
-		- Took a while to realise that end() iterators point to the element AFTER the end, so no need to add + 1 to the start of te right child bbox func call
-		- At first the idea was to take the avg value of centroids, but it became clear that it is pretty common for almost all of centroids in current bbox to be the same along an axis, meaning that oen child would be empty and there would be an infinite loop. Sorting by median means that it is guaranteed that child nodes are equal in terms of number of prims.
-		- Used to create a new vector of prim pointers on heap when at the base case, but realised that sorting in place makes it easier to handle and avoids potential mem leaks.
-	</p>
+	In the base case, if the number of primitives is less than maximum leaf size, then set the start and end pointers to the node to return.</p>
+    <p></p>Otherwise, we get the median primitive by dividing the total primitive count by 2. Then, we sort all primitives. This is done by seeing which bounding box axis is the largest, then sorting it along this axis. We created custom functions to compare the centroids of bounding boxes (<code>sortByX</code>, <code>sortByY</code>, and <code>sortByZ</code>, which take the corresponding axis value for the input primitive's centroid, and returns true if the first item is smaller than the second item.</p>
+    <p>The downside of this method is that we need to sort all the primitives every recursive call. Although this isn't very efficient, it is necessary because a child bounding box isn't guaranteed to have the same largest axis as its parent.</p>
+    <p>Once the list is sorted, we recursively call the <code>construct_bvh</code> function on the left and right side, which become the left and right nodes of the root node. The two halves are created from the sorted list divided at the median primitive.</p>
+    <p> Our debugging journey was the following:</p>
+    <ul>
+        <li>Took a while to realise that end() iterators point to the element AFTER the end, so no need to add + 1 to the start of te right child bbox func call</li>
+        <li>At first, the idea was to take the average value of centroids, but it became clear that it is pretty common for almost all of the centroids in current bounding box to be the same along an axis, meaning that one child would be empty and there would be an infinite loop. Sorting by median means that it is guaranteed that child nodes are equal in terms of number of primitives.</li>
+        <li>Used to create a new vector of primitive pointers on heap when at the base case, but realised that sorting in place makes it easier to handle and avoids potential memory leaks.</li>
+    </ul>
 
     <h3>
         Show images with normal shading for a few large .dae files that you can only render with BVH acceleration.
     </h3>
-    <!-- Example of including multiple figures -->
+
     <p>Below are images that were generated by running the renderer with BVH using 8 threads. The maxplanck.dae contains over 50k primitives. The lucy.dae contains over 130k primitives. Both images are 800 x 600 pixels.</p>
     <div align="middle">
         <table style="width:100%">
@@ -190,11 +199,172 @@
 	<h3>
 	  Compare rendering times on a few scenes with moderately complex geometries with and without BVH acceleration. Present your results in a one-paragraph analysis.
 	</h3>
-	<p>
-		maxplanck
-		building
-		bunny
-	</p>
+	<p>To compare the efficiency of using the BVH, we timed several images being rendered by the same number of rays, using the same number of threads. Starting with the simplest cube, which has only 12 primitives, there was no speedup. The time to sort the primitives in this small case offset the speedup in traversing the BVH tree. As expected, we see a significant speedup for more complex scenes. Some scenes are divided more evenly, like <code>maxplanck.dae</code> or <code>dragon.dae</code>. The exception where speedup was not as big is <code>building.dae</code>, a scene with a large number of primitives concentrated in one part of the scene.
+
+
+    <table border="1px solid black;">
+            <thead>
+                <tr>
+                    <td>
+                        Filename
+                    </td>
+                    <td>
+                        # of primitives
+                    </td>
+                    <td>
+                        # of rays
+                    </td>
+                    <td>
+                        # threads
+                    </td>
+                    <td>
+                        Resolution (pixels)
+                    </td>
+                    <td>
+                        With BVH (seconds)
+                    </td>
+                    <td>
+                        Without BVH (seconds)
+                    </td>
+                    <td>
+                        Speedup (times)
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    cube.dae
+                </td>
+                <td>
+                    12
+                </td>
+                <td>
+                    176,768
+                </td>
+                <td>
+                    8
+                </td>
+                <td>
+                    800x600
+                </td>
+                <td>
+                    0.093072
+                </td>
+                <td>
+                    0.091904
+                </td>
+                <td>
+                    0.9875
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    bunny.dae
+                </td>
+                <td>
+                    33,696
+                </td>
+                <td>
+                    418,721
+                </td>
+                <td>
+                    8
+                </td>
+                <td>
+                    800x600
+                </td>
+                <td>
+                    0.313027
+                </td>
+                <td>
+                    32.3483
+                </td>
+                <td>
+                    103.3403
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    building.dae
+                </td>
+                <td>
+                    39,506
+                </td>
+                <td>
+                    205,141
+                </td>
+                <td>
+                    8
+                </td>
+                <td>
+                    800x600
+                </td>
+                <td>
+                    0.33361
+                </td>
+                <td>
+                    9.64124
+                </td>
+                <td>
+                    28.8997
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    maxplanck.dae
+                </td>
+                <td>
+                    50,801
+                </td>
+                <td>
+                    296,593
+                </td>
+                <td>
+                    8
+                </td>
+                <td>
+                    800x600
+                </td>
+                <td>
+                    0.422581
+                </td>
+                <td>
+                    64.7466
+                </td>
+                <td>
+                    153.2170
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    dragon.dae
+                </td>
+                <td>
+                    100,012
+                </td>
+                <td>
+                    247,522
+                </td>
+                <td>
+                    8
+                </td>
+                <td>
+                    800x600
+                </td>
+                <td>
+                    0.826029
+                </td>
+                <td>
+                    108.905
+                </td>
+                <td>
+                    131.8416
+                </td>
+            </tr>
+            </tbody>
+    </table>
+
 	<br>
 
     <h2 align="middle">Part 3: Direct Illumination (20 Points)</h2>
