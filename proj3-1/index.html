@@ -150,60 +150,67 @@
 
 
     <h2 align="middle">Part 2: Bounding Volume Hierarchy (20 Points)</h2>
-    <!-- Walk through your BVH construction algorithm. Explain the heuristic you chose for picking the splitting point.
-    Show images with normal shading for a few large .dae files that you can only render with BVH acceleration.
-    Compare rendering times on a few scenes with moderately complex geometries with and without BVH acceleration. Present your results in a one-paragraph analysis. -->
+	<!-- Walk through 	your BVH construction algorithm. Explain the heuristic you chose for picking the splitting point.
+	Show images with normal shading for a few large .dae files that you can only render with BVH acceleration.
+	Compare rendering times on a few scenes with moderately complex geometries with and without BVH acceleration. Present your results in a one-paragraph analysis. -->
 
-    <h3>
-        Walk through your BVH construction algorithm. Explain the heuristic you chose for picking the splitting
-        point.
-    </h3>
-	<p>FROM THE SPEC:
-		Walk through your BVH construction algorithm. Explain the heuristic you chose for picking the splitting point.
-		Show images with normal shading for a few large .dae files that you can only render with BVH acceleration.
-		Compare rendering times on a few scenes with moderately complex geometries with and without BVH acceleration. Present your results in a one-paragraph analysis.</p>
-    <p>
-        YOUR RESPONSE GOES HERE
-    </p>
+	<h3>
+	  Walk through your BVH construction algorithm. Explain the heuristic you chose for picking the splitting point.
+	</h3>
+	<p>
+		- Similar to initial imp, gather all primitives between start and end, construct bbox, count num of prims
+		- Create BVHnode to return
+		- BASE CASE: if num of prims is less than max leaf size then set the start and end pointers for node
+		- Otherwise, get the middle_idx by divving prim count by 2
+		- Then sort all prims. This is done by seeing which axis is the largest, then sorting it along this axis
+			- Had to write a custom compare function for the cpp sort function call, this simply takes the corresponding axis value for the input primitive's centroid, returns true if item 0 smaller than 1
+			- DOWNSIDE: Need to sort all the prims every recursive call, this isn't amazingly efficient but a child bbox isn't guaranteed to have the same largest axis as its parent.
+		- Once sorted, recursively call the construct_bvh function
+		- DEBUGGING JOURNEY:
+			- Took a while to realise that end() iterators point to the element AFTER the end, so no need to add + 1 to the start of te right child bbox func call
+			- At first the idea was to take the avg value of centroids, but it became clear that it is pretty common for almost all of centroids in current bbox to be the same along an axis, meaning that oen child would be empty and there would be an infinite loop. Sorting by median means that it is guaranteed that child nodes are equal in terms of number of prims.
+			- Used to create a new vector of prim pointers on heap when at the base case, but realised that sorting in place makes it easier to handle and avoids potential mem leaks.
+	</p>
 
-    <h3>
-        Show images with normal shading for a few large .dae files that you can only render with BVH acceleration.
-    </h3>
-    <!-- Example of including multiple figures -->
-    <div align="middle">
-        <table style="width:100%">
-            <tr align="center">
-                <td>
-                    <img src="images/your_file.png" align="middle" width="400px"/>
-                    <figcaption>example1.dae</figcaption>
-                </td>
-                <td>
-                    <img src="images/your_file.png" align="middle" width="400px"/>
-                    <figcaption>example2.dae</figcaption>
-                </td>
-            </tr>
-            <tr align="center">
-                <td>
-                    <img src="images/your_file.png" align="middle" width="400px"/>
-                    <figcaption>example3.dae</figcaption>
-                </td>
-                <td>
-                    <img src="images/your_file.png" align="middle" width="400px"/>
-                    <figcaption>example4.dae</figcaption>
-                </td>
-            </tr>
-        </table>
-    </div>
-    <br>
+	<h3>
+	  Show images with normal shading for a few large .dae files that you can only render with BVH acceleration.
+	</h3>
+	<!-- Example of including multiple figures -->
+	<div align="middle">
+	  <table style="width:100%">
+		<tr align="center">
+		  <td>
+			<img src="images/p2_maxplanck.png" align="middle" width="400px"/>
+			<figcaption>maxplanck.dae</figcaption>
+		  </td>
+		  <td>
+			<img src="images/p2_blob.png" align="middle" width="400px"/>
+			<figcaption>blob.dae</figcaption>
+		  </td>
+		</tr>
+		<tr align="center">
+		  <td>
+			<img src="images/p2_lucy.png" align="middle" width="400px"/>
+			<figcaption>lucy.dae</figcaption>
+		  </td>
+		  <td>
+			<img src="images/p2_peter.png" align="middle" width="400px"/>
+			<figcaption>peter.dae</figcaption>
+		  </td>
+		</tr>
+	  </table>
+	</div>
+	<br>
 
-    <h3>
-        Compare rendering times on a few scenes with moderately complex geometries with and without BVH
-        acceleration. Present your results in a one-paragraph analysis.
-    </h3>
-    <p>
-        YOUR RESPONSE GOES HERE
-    </p>
-    <br>
+	<h3>
+	  Compare rendering times on a few scenes with moderately complex geometries with and without BVH acceleration. Present your results in a one-paragraph analysis.
+	</h3>
+	<p>
+		maxplanck
+		building
+		bunny
+	</p>
+	<br>
 
     <h2 align="middle">Part 3: Direct Illumination (20 Points)</h2>
     <!-- Walk through both implementations of the direct lighting function.
