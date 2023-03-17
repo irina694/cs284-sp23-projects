@@ -499,7 +499,30 @@
 
     <!-- Walk through your implementation of the indirect lighting function.
    Show some images rendered with global (direct and indirect) illumination. Use 1024 samples per pixel.-->
-   <p>Global illumination consists of direct and indirect light. The indirect lightning comes from light bouncing off objects in the scene several times before reaching the camera. We implemented the global illumination by adding the zero-bounce (direct) and the at-least-one-bounce radiance (indirect). The zero-bounce radiance displays light directly from the light source. The at-least-one-bounce-radiance collects and displays light by adding radiance from rays bouncing at least once and bouncing multiple times, until a termination condition is reached. We used recursion to implement <code>at_least_one_bounce_radiance</code> and used the Russian Roulette as the unbiased probabilistic termination condition. The Russian Roulette ensures that all rays stop eventually, and the more bounces the rays have, the higher the probability of stopping after the next bounce. We start the probability of stopping as 0.3. The rays also were stopped if they reached their maximum depth, to avoid long termination times.</p>
+   <p>Global illumination consists of direct and indirect light. The indirect lightning comes from light bouncing off objects in the scene several times before reaching the camera. We implemented the global illumination by adding the zero-bounce (direct) and the at-least-one-bounce radiance (indirect). The zero-bounce radiance displays light directly from the light source. The at-least-one-bounce-radiance collects and displays light by adding radiance from rays bouncing at least once and bouncing multiple times, until a termination condition is reached. We used recursion to implement <code>at_least_one_bounce_radiance</code> and used the Russian Roulette as the unbiased probabilistic termination condition. The Russian Roulette ensures that all rays stop. We set the probability of stopping to 0.3. The rays also stop if they reach their maximum depth, to avoid long termination times.</p>
+
+    <p>For each pixel, on each recursive call, we collect the amount of light at each bounce, then add them all together to get the overall global illumination. We recursively create new rays at each intersection point (bounce), until the ray stops either by reaching the maximum depth or by the Russian Roulette (the coin flip, which returns a boolean that stops the recursion).</p>
+
+    <h3>
+        Show some images rendered with global (direct and indirect) illumination. Use 1024 samples per pixel.
+    </h3>
+
+    <p>Images below show global illumination and were rendered using 1024 samples per pixel and 4 light rays. Both images are 480x360 pixels. The maximum ray depth was set to 5.</p>
+
+    <div align="middle">
+        <table style="width:100%">
+            <tr align="center" width="100%;">
+                <td width="50%;">
+                    <img src="images/t4_spheres_1024.png" align="middle" width="50%;"/>
+                    <figcaption>Global Illumination Example (<code>CBspheres_lambertian.dae</code>)</figcaption>
+                </td>
+                <td width="50%;">
+                    <img src="images/t4_bench_1024.png" align="middle" width="50%;"/>
+                    <figcaption>Global Illumination Example (<code>bench.dae</code>)</figcaption>
+                </td>
+            </tr>
+        </table>
+    </div>
 
    <p>Use 1024 samples per pixel.
        Pick one scene and compare rendered views first with only direct illumination, then only indirect illumination. Use 1024 samples per pixel. (You will have to edit PathTracer::at_least_one_bounce_radiance(...) in your code to generate these views.)
@@ -512,25 +535,7 @@
    </p>
    <br>
 
-   <h3>
-       Show some images rendered with global (direct and indirect) illumination. Use 1024 samples per pixel.
-   </h3>
-   <!-- Example of including multiple figures -->
-    <div align="middle">
-        <table style="width:100%">
-            <tr align="center">
-                <td>
-                    <img src="images/your_file.png" align="middle" width="400px"/>
-                    <figcaption>example1.dae</figcaption>
-                </td>
-                <td>
-                    <img src="images/your_file.png" align="middle" width="400px"/>
-                    <figcaption>example2.dae</figcaption>
-                </td>
-            </tr>
-        </table>
-    </div>
-    <br>
+
 
     <h3>
         Pick one scene and compare rendered views first with only direct illumination, then only indirect
