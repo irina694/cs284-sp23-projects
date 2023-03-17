@@ -121,11 +121,11 @@
         <table style="width:100%">
             <tr align="center">
                 <td>
-                    <img src="images/p1_teapot.png" align="middle" width="400px"/>
+                    <img src="images/p1_teapot.png" align="middle" width="90%;"/>
                     <figcaption>teapot.dae</figcaption>
                 </td>
                 <td>
-                    <img src="images/p1_cube.png" align="middle" width="400px"/>
+                    <img src="images/p1_cube.png" align="middle" width="90%;"/>
                     <figcaption>cube.dae</figcaption>
                 </td>
             </tr>
@@ -184,11 +184,11 @@
         <table style="width:100%">
             <tr align="center">
                 <td>
-                    <img src="images/t2_maxplanck.png" align="middle" width="75%;"/>
+                    <img src="images/t2_maxplanck.png" align="middle" width="90%;"/>
                     <figcaption>maxplanck.dae</figcaption>
                 </td>
                 <td>
-                    <img src="images/t2_lucy.png" align="middle" width="75%;"/>
+                    <img src="images/t2_lucy.png" align="middle" width="90%;"/>
                     <figcaption>lucy.dae</figcaption>
                 </td>
             </tr>
@@ -199,7 +199,7 @@
 	<h3>
 	  Compare rendering times on a few scenes with moderately complex geometries with and without BVH acceleration. Present your results in a one-paragraph analysis.
 	</h3>
-	<p>To compare the efficiency of using the BVH, we timed several images being rendered by the same number of rays, using the same number of threads. Starting with the simplest cube, which has only 12 primitives, there was no speedup. The time to sort the primitives in this small case offset the speedup in traversing the BVH tree. As expected, we see a significant speedup for more complex scenes. Some scenes are divided more evenly, like <code>maxplanck.dae</code> or <code>dragon.dae</code>. The exception where speedup was not as big is <code>building.dae</code>, a scene with a large number of primitives concentrated in one part of the scene.
+	<p>To compare the efficiency of using the BVH, we timed several images being rendered by the same number of rays, using the same number of threads. We used the default values for number of samples and light rays to time the execution: 8 threads, 1 sample per pixel, and 1 light ray, keeping the output image size constant (800x600 pixels). Starting with the simplest cube, which has 12 primitives, there was no speedup. The time to sort the primitives in this small case offset the speedup in traversing the BVH tree. As expected, we see a significant speedup for more complex scenes. Some scenes are divided more evenly, like <code>maxplanck.dae</code> or <code>dragon.dae</code>. The exception where speedup was not as big is <code>building.dae</code>, a scene with a large number of primitives concentrated in one part of the scene. The BVH speedup in this scene was about 30 times, compared to no BVH.</p>
 
 
     <table border="1px solid black;">
@@ -403,22 +403,22 @@
             <br>
             <tr align="center">
                 <td>
-                    <img src="images/p3_bunny_uniform.png" align="middle" width="400px"/>
+                    <img src="images/p3_bunny_uniform.png" align="middle" width=90%;"/>
                     <figcaption>CBbunny.dae, Uniform Lighting</figcaption>
                 </td>
                 <td>
-                    <img src="images/p3_bunny_direct.png" align="middle" width="400px"/>
+                    <img src="images/p3_bunny_direct.png" align="middle" width="90%;"/>
                     <figcaption>CBbunny.dae, Importance Lighting</figcaption>
                 </td>
             </tr>
             <br>
             <tr align="center">
                 <td>
-                    <img src="images/p3_spheres_uniform.png" align="middle" width="400px"/>
+                    <img src="images/p3_spheres_uniform.png" align="middle" width="90%;"/>
                     <figcaption>CBspheres_lambertian.dae, Uniform Lighting</figcaption>
                 </td>
                 <td>
-                    <img src="images/p3_spheres_direct.png" align="middle" width="400px"/>
+                    <img src="images/p3_spheres_direct.png" align="middle" width="90%;"/>
                     <figcaption>CBspheres_lambertian.dae, Importance Lighting</figcaption>
                 </td>
             </tr>
@@ -438,21 +438,21 @@
         <table style="width:100%">
             <tr align="center">
                 <td>
-                    <img src="images/p3_spheres_l1.png" align="middle" width="200px"/>
+                    <img src="images/p3_spheres_l1.png" align="middle" width="90%;"/>
                     <figcaption>1 Light Ray (CBspheres_lambertian.dae)</figcaption>
                 </td>
                 <td>
-                    <img src="images/p3_spheres_l4.png" align="middle" width="200px"/>
+                    <img src="images/p3_spheres_l4.png" align="middle" width="90%;"/>
                     <figcaption>4 Light Rays (CBspheres_lambertian.dae)</figcaption>
                 </td>
             </tr>
             <tr align="center">
                 <td>
-                    <img src="images/p3_spheres_l16.png" align="middle" width="200px"/>
+                    <img src="images/p3_spheres_l16.png" align="middle" width="90%;"/>
                     <figcaption>16 Light Rays (CBspheres_lambertian.dae)</figcaption>
                 </td>
                 <td>
-                    <img src="images/p3_spheres_l64.png" align="middle" width="200px"/>
+                    <img src="images/p3_spheres_l64.png" align="middle" width="90%;"/>
                     <figcaption>64 Light Rays (CBspheres_lambertian.dae)</figcaption>
                 </td>
             </tr>
@@ -485,9 +485,9 @@
 
     <!-- Walk through your implementation of the indirect lighting function.
    Show some images rendered with global (direct and indirect) illumination. Use 1024 samples per pixel.-->
-   <p>Global illumination consists of direct and indirect light. The indirect lightning comes from light bouncing off objects in the scene several times before reaching the camera. We implemented the global illumination by adding the zero-bounce (direct) and the at-least-one-bounce radiance (indirect). The zero-bounce radiance displays light directly from the light source. The at-least-one-bounce-radiance collects and displays light by adding radiance from rays bouncing at least once and bouncing multiple times, until a termination condition is reached. We used recursion to implement <code>at_least_one_bounce_radiance</code> and used the Russian Roulette as the unbiased probabilistic termination condition. The Russian Roulette ensures that all rays stop. We set the probability of stopping to 0.3. The rays also stop if they reach their maximum depth, to avoid long termination times.</p>
+   <p>Global illumination consists of direct and indirect light. The indirect lightning comes from light bouncing off objects in the scene several times before reaching the camera. We implemented global illumination by adding together zero-bounce (direct) and the at-least-one-bounce radiance (indirect). The zero-bounce radiance displays light directly from the light source. The at-least-one-bounce-radiance collects and displays light by adding radiance from rays bouncing at least once and bouncing multiple times, until a termination condition is reached. We used recursion to implement <code>at_least_one_bounce_radiance</code> and used the Russian Roulette as the unbiased probabilistic termination condition. The Russian Roulette ensures that all rays stop. We set the probability of stopping to 0.3. The rays also stop if they reach their maximum depth, to avoid long termination times. The non-recursive base case calls the <code>one_bounce_radiance</code> function for whiever segment or depth the ray reaches at the end. We decrement the ray's depth on each recursive call, so the recursion collects the radiance from the point of the last ray's intersection (the maximum depth), and then adds the radiances as it recurses back up the stack, until the non-recursive case of <code>one_bounce_radiance</code> is reached. </p>
 
-    <p>For each pixel, on each recursive call, we collect the amount of light at each bounce, then add them all together to get the overall global illumination. We recursively create new rays at each intersection point (bounce), until the ray stops either by reaching the maximum depth or by the Russian Roulette (the coin flip, which returns a boolean that stops the recursion).</p>
+    <p>For each pixel, on each recursive call, we collect the amount of light at each bounce, then add the light from all bounces together to get the overall global illumination. We recursively create new rays at each intersection point (bounce), until the ray stops either by reaching the maximum depth or by the Russian Roulette (the coin flip, which returns a boolean that stops the recursion).</p>
 
     <h3>
         Show some images rendered with global (direct and indirect) illumination. Use 1024 samples per pixel.
@@ -499,60 +499,59 @@
         <table style="width:100%">
             <tr align="center" width="100%;">
                 <td width="50%;">
-                    <img src="images/t4_spheres_1024.png" align="middle" width="50%;"/>
+                    <img src="images/t4_spheres_1024.png" align="middle" width="90%;"/>
                     <figcaption>Global Illumination Example (<code>CBspheres_lambertian.dae</code>)</figcaption>
                 </td>
                 <td width="50%;">
-                    <img src="images/t4_bench_1024.png" align="middle" width="50%;"/>
-                    <figcaption>Global Illumination Example (<code>bench.dae</code>)</figcaption>
+                    <img src="images/" align="middle" width="90%;"/>
+                    <figcaption>Global Illumination Example (<code>CBbunny.dae</code>)</figcaption>
                 </td>
             </tr>
         </table>
     </div>
-
-   <p>Use 1024 samples per pixel.
-       Pick one scene and compare rendered views first with only direct illumination, then only indirect illumination. Use 1024 samples per pixel. (You will have to edit PathTracer::at_least_one_bounce_radiance(...) in your code to generate these views.)
-       For CBbunny.dae, compare rendered views with max_ray_depth set to 0, 1, 2, 3, and 100 (the -m flag). Use 1024 samples per pixel.
-       Pick one scene and compare rendered views with various sample-per-pixel rates, including at least 1, 2, 4, 8, 16, 64, and 1024. Use 4 light rays.
-       You will probably want to use the instructional machines for the above renders in order to not burn up your own computer for hours.</p>
-
-   <p>
-       YOUR RESPONSE GOES HERE
-   </p>
-   <br>
-
-
 
     <h3>
         Pick one scene and compare rendered views first with only direct illumination, then only indirect
-        illumination. Use 1024 samples per pixel. (You will have to edit
-        PathTracer::at_least_one_bounce_radiance(...) in your code to generate these views.)
+        illumination. Use 1024 samples per pixel.
     </h3>
-    <!-- Example of including multiple figures -->
+
+   <p>
+       To compare direct illumination with indirect illumination, we picked a scene with two spheres (<code>CBspheres_lambertian.dae</code>). First, we rendered the scene with direct illumination only, by collecting light from the light source in the <code>zero_bounce_radiance</code> and a modified <code>at_least_one_bounce_radiance</code >function. We modified the code in <code>at_least_one_bounce_radiance</code> to return after 1 bounce (at the ray depth of 1), in practice producing the same effect as calling the non-recursive <code>one_bounce_radiance</code> function. For indirect illumination only, we modified the total illumination to include the light from <code>at_least_one_bounce_radiance</code> but end when the ray depth is at 1. The indirect light doesn't include the light that comes directly from the light source, or the light from the first bounce. We calculate the illumination value by solving the reflectance equation using Monte Carlo Estimator. To get the radiance at the intersection point, we multiply the value of the recursive call of the newly created ray, the BSDF of the original intersection, the cosine of the angle between the incoming light and the normal to the object's surface, and divide by the probability distribution function.
+   </p>
+
+    <p>See below for comparison images, generated at 480x360 pixel resolution, 1024 samples per pixel, and 4 light rays. The maximum ray depth for indirect illumination was set to 5.</p>
+
     <div align="middle">
         <table style="width:100%">
-            <tr align="center">
-                <td>
-                    <img src="images/your_file.png" align="middle" width="400px"/>
-                    <figcaption>Only direct illumination (example1.dae)</figcaption>
+            <tr align="center" width="100%;">
+                <td width="50%;">
+                    <img src="images/t4_spheres_direct_1024.png" align="middle" width="90%;"/>
+                    <figcaption>Direct Illumination Example (<code>CBspheres_lambertian.dae</code>)</figcaption>
                 </td>
-                <td>
-                    <img src="images/your_file.png" align="middle" width="400px"/>
-                    <figcaption>Only indirect illumination (example1.dae)</figcaption>
+                <td width="50%;">
+                    <img src="images/t4_spheres_indirect_1024.png" align="middle" width="90%;"/>
+                    <figcaption>Indirect Illumination Example (<code>CBspheres_lambertian.dae</code>)</figcaption>
                 </td>
             </tr>
         </table>
     </div>
-    <br>
-    <p>
-        YOUR EXPLANATION GOES HERE
-    </p>
-    <br>
+
+    <p>In the direct illumination only (left picture above), we see the light that goes directly from the light into the camera (zero bounce) and light that bounces off objects once before hitting the camera. That's why we see the spheres illuminated from the top and not from the bottom. In the indirect illumination (right picture above), there's no direct light, so the ceiling is completely dark. Moreover, the spheres are not illuminated from above because we see only the light that bounces more than once. The overall indirect illumination images is darker than direct illumination image. Except for the colored shadows, the indirect illumination has almost no color, compared to the direct illumination image. Both images were rendered at 480x360 pixel resolution, 1024 samples per pixel, and 4 light rays. For indirect illumination, the maximum ray depth was 5.</p>
 
     <h3>
         For CBbunny.dae, compare rendered views with max_ray_depth set to 0, 1, 2, 3, and 100 (the -m flag). Use
         1024 samples per pixel.
     </h3>
+
+    <p>
+        YOUR RESPONSE GOES HERE
+    </p>
+
+
+
+   <br><br>
+
+
     <!-- Example of including multiple figures -->
     <div align="middle">
         <table style="width:100%">
@@ -636,6 +635,14 @@
         </table>
     </div>
     <br>
+
+    <p>Pick one scene and compare rendered views with various sample-per-pixel rates, including at least 1, 2, 4, 8, 16, 64, and 1024. Use 4 light rays.
+        You will probably want to use the instructional machines for the above renders in order to not burn up your own computer for hours.</p>
+
+    <p>
+        YOUR RESPONSE GOES HERE
+    </p>
+
     <p>
         YOUR EXPLANATION GOES HERE
     </p>
