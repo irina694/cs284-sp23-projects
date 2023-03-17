@@ -97,6 +97,7 @@
         Walk through the ray generation and primitive intersection parts of the rendering pipeline.
     </h3>
     <p>
+        For Part 1, we start with generating a ray, given to us by the normalized <code>(x, y)</code> 2D image coordinate. We have two coordinate systems: the 3D world coordinate
         For Part 1, within <code>Pathtracer::raytrace_pixel</code>, each pixel is iterated over, and <code>ns_aa</code> rays are generated for each pixel using the <code>Camera::generate_ray</code> function. We generate a ray using the normalized <code>(x, y)</code> 2D image coordinate. We have two coordinate systems: the 3D world coordinate system where objects are located, and the 3D camera coordinate system.
 		<br>First, we convert the given normalized image coordinate into the camera coordinate system, using the helper function <code>Camera::image_to_camera_coordinate</code>. We know where the camera is located in the world coordinate system with respect to the third axis (<code>z</code>), so we need to find what <code>x</code> and <code>y</code> are in the camera space. To do that, we scale the <code>x</code> and <code>y</code> coordinates by the image size, since we know that the camera space spans from <code>-tan(hFov/2)</code> to <code>tan(nFov/2)</code> in the <code>x</code>-direction, and from <code>-tan(vFov/2)</code> to <code>tan(vFov/2)</code> in the <code>x</code>-direction. The <code>hFov</code> is the angle of the horizontal field of view and <code>vFov</code> is the angle of the field of view in the vertical dimension. Given the coordinate <code>(x,y)</code> in camera space, we find the direction of the ray. The direction of the ray is from the camera origin <code>(0, 0, 0)</code> through the point where ray intersected the sensor plate, in camera coordinate system.
 		<br>Next, we convert the ray from camera to world coordinates. We set the ray's origin as the camera's position in world space and we normalize the direction of the ray in world coordinate system. Finally, we set the ray's minimum time to the near clipping plane, and ray's maximum time to the far clipping plane, since rays outside the camera clipping planes are invisible to the camera.
@@ -112,12 +113,16 @@
     </div>
 
 	<p>
+<<<<<<< HEAD
 		Triangle primitive intersection is largely covered under the next writeup heading below, so the Sphere primitive intersection is discussed here.
 		<br><code>Sphere::intersect</code> is the top-level function call, and calls the other two functions used for detecting a <code>Sphere</code> intersection. The main purpose of this function is to verify if a valid intersection has occurred by calling the other two <code>Sphere</code> methods, and it then updates the passed in <code>Intersection</code> object with the corresponding data, and returns a <code>bool</code> indicating if there was a succesful intersection.
 		<br><code>Sphere::has_intersection</code> is a straightforward function, and returns a <code>bool</code> indicating if there has been <i>any</i> valid intersection with the Sphere primitive. This is used by other Sphere methods to check if it's worth doing futher intersection computation.
 		<br><code>Sphere::test</code> checks the validity of the intersection. It does this by following the formulae shown on
 		<a href="https://cs184.eecs.berkeley.edu/sp23/lecture/9-23/intro-to-ray-tracing-and-acceler">this lecture slide</a>.
 		The two t values are calculated. If they are equal, the ray is tangent. If they are different then they're sorted so t1 is smaller than t2. The ray is then checked if it is at least partially within the sphere. If so, an intersection is detected. This logic portion was updated when working on Part 3, as we realised rays that were originating inside the sphere were not properly detecting a collision on the inside surface, and would treat the sphere as though it were transparent. The function then assigns t1 and t2 to the input t arguments, and returns a <code>bool</code> indicating if a valid intersection was found.
+=======
+        TODO: walk through primitive intersection parts of the rendering pipeline.
+>>>>>>> c6bf5728df02457fc7d39752a0442a183120949c
 	</p>
     <br>
 
@@ -649,37 +654,37 @@
         <table style="width:100%">
             <tr align="center">
                 <td>
-                    <img src="images/your_file.png" align="middle" width="400px"/>
+                    <img src="images/t4_CBspheres_s1.png" align="middle" width="50%;"/>
                     <figcaption>1 sample per pixel (example1.dae)</figcaption>
                 </td>
                 <td>
-                    <img src="images/your_file.png" align="middle" width="400px"/>
+                    <img src="images/t4_CBspheres_s2.png" align="middle" width="50%;"/>
                     <figcaption>2 samples per pixel (example1.dae)</figcaption>
                 </td>
             </tr>
             <tr align="center">
                 <td>
-                    <img src="images/your_file.png" align="middle" width="400px"/>
+                    <img src="images/t4_CBspheres_s4.png" align="middle" width="50%;"/>
                     <figcaption>4 samples per pixel (example1.dae)</figcaption>
                 </td>
                 <td>
-                    <img src="images/your_file.png" align="middle" width="400px"/>
+                    <img src="images/t4_CBspheres_s8.png" align="middle" width="50%;"/>
                     <figcaption>8 samples per pixel (example1.dae)</figcaption>
                 </td>
             </tr>
             <tr align="center">
                 <td>
-                    <img src="images/your_file.png" align="middle" width="400px"/>
+                    <img src="images/t4_CBspheres_s16.png" align="middle" width="50%;"/>
                     <figcaption>16 samples per pixel (example1.dae)</figcaption>
                 </td>
                 <td>
-                    <img src="images/your_file.png" align="middle" width="400px"/>
+                    <img src="images/t4_CBspheres_s64.png" align="middle" width="50%;"/>
                     <figcaption>64 samples per pixel (example1.dae)</figcaption>
                 </td>
             </tr>
             <tr align="center">
                 <td>
-                    <img src="images/your_file.png" align="middle" width="400px"/>
+                    <img src="images/t4_CBspheres_s1024.png" align="middle" width="50%;"/>
                     <figcaption>1024 samples per pixel (example1.dae)</figcaption>
                 </td>
             </tr>
