@@ -547,7 +547,7 @@
     </h3>
 
    <p>
-       To compare direct illumination with indirect illumination, we picked a scene with two spheres (<code>CBspheres_lambertian.dae</code>). First, we rendered the scene with direct illumination only, by collecting light from the light source in the <code>zero_bounce_radiance</code> and a modified <code>at_least_one_bounce_radiance</code >function. We modified the code in <code>at_least_one_bounce_radiance</code> to return after 1 bounce (at the ray depth of 1), in practice producing the same effect as calling the non-recursive <code>one_bounce_radiance</code> function. For indirect illumination only, we modified the total illumination to include the light from <code>at_least_one_bounce_radiance</code> but end when the ray depth is at 1. The indirect light doesn't include the light that comes directly from the light source, or the light from the first bounce. We calculate the illumination value by solving the reflectance equation using Monte Carlo Estimator. To get the radiance at the intersection point, we multiply the value of the recursive call of the newly created ray, the BSDF of the original intersection, the cosine of the angle between the incoming light and the normal to the object's surface, and divide by the probability distribution function.
+       To compare direct illumination with indirect illumination, we picked a scene with two spheres (<code>CBspheres_lambertian.dae</code>). First, we rendered the scene with direct illumination only, by collecting light from the light source in the <code>zero_bounce_radiance</code> and a modified <code>at_least_one_bounce_radiance</code> function. We modified the code in <code>at_least_one_bounce_radiance</code> to return after 1 bounce (at the ray depth of 1), in practice producing the same effect as calling the non-recursive <code>one_bounce_radiance</code> function. For indirect illumination only, we modified the total illumination to include the light from <code>at_least_one_bounce_radiance</code> but end when the ray depth is at 1. The indirect light doesn't include the light that comes directly from the light source, or the light from the first bounce. We calculate the illumination value by solving the reflectance equation using Monte Carlo Estimator. To get the radiance at the intersection point, we multiply the value of the recursive call of the newly created ray, the BSDF of the original intersection, the cosine of the angle between the incoming light and the normal to the object's surface, and divide by the probability distribution function.
    </p>
 
     <p>See below for comparison images, generated at 480x360 pixel resolution, 1024 samples per pixel, and 4 light rays. The maximum ray depth for indirect illumination was set to 5.</p>
@@ -575,7 +575,7 @@
     </h3>
 
     <p>
-        YOUR RESPONSE GOES HERE
+        Images below show the same image (<code>CBbunny.dae</code>) rendered with 1024 samples per pixel, 4 light rays, in a 480x360 size with various maximum ray depths, starting at 0. The 0 max ray depth is the zero-bounce direct illumination, where the only light visible is the light emitted by the light source. The 1 max ray depth is the one-bounce direct illumination, where the light that's visible is the light from the light source and the light that bounces off objects once, before reaching the camera. The max ray depth 2, 3, and 100 rely on the recursive at-least-one-bounce function, and include both direct and indirect illumination. As the ray max depth increases, the amount of total light in the image increases, so the images become brighter as the max depth increases. The 100 max ray depth took the longest to render, around N hours whereas the other images took on the order of X minutes.</code>
     </p>
 
 
@@ -588,36 +588,39 @@
         <table style="width:100%">
             <tr align="center">
                 <td>
-                    <img src="images/your_file.png" align="middle" width="400px"/>
+                    <img src="images/t4_CBbunny_m0.png" align="middle" width="65%;"/>
                     <figcaption>max_ray_depth = 0 (CBbunny.dae)</figcaption>
                 </td>
                 <td>
-                    <img src="images/your_file.png" align="middle" width="400px"/>
+                    <img src="images/t4_CBbunny_m1.png" align="middle" width="65%;"/>
                     <figcaption>max_ray_depth = 1 (CBbunny.dae)</figcaption>
                 </td>
             </tr>
             <tr align="center">
                 <td>
-                    <img src="images/your_file.png" align="middle" width="400px"/>
+                    <img src="images/t4_CBbunny_m2.png" align="middle" width="65%;"/>
                     <figcaption>max_ray_depth = 2 (CBbunny.dae)</figcaption>
                 </td>
                 <td>
-                    <img src="images/your_file.png" align="middle" width="400px"/>
+                    <img src="images/t4_CBbunny_m3.png" align="middle" width="65%;"/>
                     <figcaption>max_ray_depth = 3 (CBbunny.dae)</figcaption>
                 </td>
             </tr>
             <tr align="center">
                 <td>
-                    <img src="images/your_file.png" align="middle" width="400px"/>
+                    <img src="images/t4_CBbunny_m100.png" align="middle" width="65%;"/>
                     <figcaption>max_ray_depth = 100 (CBbunny.dae)</figcaption>
                 </td>
             </tr>
         </table>
     </div>
+
     <br>
+
     <p>
         YOUR EXPLANATION GOES HERE
     </p>
+
     <br>
 
     <h3>
@@ -666,13 +669,6 @@
         </table>
     </div>
     <br>
-
-    <p>Pick one scene and compare rendered views with various sample-per-pixel rates, including at least 1, 2, 4, 8, 16, 64, and 1024. Use 4 light rays.
-        You will probably want to use the instructional machines for the above renders in order to not burn up your own computer for hours.</p>
-
-    <p>
-        YOUR RESPONSE GOES HERE
-    </p>
 
     <p>
         YOUR EXPLANATION GOES HERE
