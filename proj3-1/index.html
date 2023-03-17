@@ -97,8 +97,17 @@
         Walk through the ray generation and primitive intersection parts of the rendering pipeline.
     </h3>
     <p>
-        - 
+        For Part 1, we start with generating a ray, coming from the sensor plate of the camera into the world, where our scene is located. We have two coordinate systems: the world coordinate system where objects are located, and the camera coordinate system. First we convert the given normalized image coordinate <code>(x,y)</code> of where the ray intersects the scene into the camera coordinate system. Then, we find the direction of the ray. The direction of the ray is from the camera origin <code>(0, 0, 0)</code> through the point where ray intersected the sensor plate, in camera coordinate system. Next, we convert the ray from camera to world coordinates. We normalize the direction of the ray in world coordinates and set the ray's minimum time to the near clipping plane, and ray's maximum time to the far clipping plane, since rays outside the camera clipping planes are invisible to the camera.
+
     </p>
+
+    <p>The image below shows a diagram of the image to camera conversion. </p>
+
+    <div align="middle">
+        <img src="images/t1_image_camera_planes.png" align="middle" width="75%"/>
+        <figcaption>The diagram of image to camera coordinate conversion for a ray in a scene (credit: <a href="https://cs184.eecs.berkeley.edu/sp23/docs/proj3-1-part-1" target="_blank">project spec</a>)</figcaption>
+    </div>
+
 	<p>
 
 	</p>
