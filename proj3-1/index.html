@@ -586,40 +586,37 @@
     </h3>
 
     <p>
-        Images below show the same image (<code>CBbunny.dae</code>) rendered with 1024 samples per pixel, 4 light rays, in a 480x360 size with various maximum ray depths, starting at 0. The 0 max ray depth is the zero-bounce direct illumination, where the only light visible is the light emitted by the light source. The 1 max ray depth is the one-bounce direct illumination, where the light that's visible is the light from the light source and the light that bounces off objects once, before reaching the camera. The max ray depth 2, 3, and 100 rely on the recursive at-least-one-bounce function, and include both direct and indirect illumination. As the ray max depth increases, the amount of total light in the image increases, so the images become brighter as the max depth increases. The 100 max ray depth took the longest to render, around N hours whereas the other images took on the order of X minutes.</code>
+        Images below show the same image (<code>CBbunny.dae</code>) rendered with 1024 samples per pixel, 4 light rays, in a 480x360 size with various maximum ray depths, starting at 0 max ray depth up to 100.
     </p>
-
 
 
    <br><br>
 
-
-    <!-- Example of including multiple figures -->
     <div align="middle">
         <table style="width:100%">
             <tr align="center">
                 <td>
-                    <img src="images/t4_CBbunny_m0.png" align="middle" width="65%;"/>
+                    <img src="images/t4_CBbunny_m0.png" align="middle" width="75%;"/>
                     <figcaption>max_ray_depth = 0 (CBbunny.dae)</figcaption>
                 </td>
                 <td>
-                    <img src="images/t4_CBbunny_m1.png" align="middle" width="65%;"/>
+                    <img src="images/t4_CBbunny_m1.png" align="middle" width="75%;"/>
                     <figcaption>max_ray_depth = 1 (CBbunny.dae)</figcaption>
                 </td>
             </tr>
             <tr align="center">
                 <td>
-                    <img src="images/t4_CBbunny_m2.png" align="middle" width="65%;"/>
+                    <img src="images/t4_CBbunny_m2.png" align="middle" width="75%;"/>
                     <figcaption>max_ray_depth = 2 (CBbunny.dae)</figcaption>
                 </td>
                 <td>
-                    <img src="images/t4_CBbunny_m3.png" align="middle" width="65%;"/>
+                    <img src="images/t4_CBbunny_m3.png" align="middle" width="75%;"/>
                     <figcaption>max_ray_depth = 3 (CBbunny.dae)</figcaption>
                 </td>
             </tr>
             <tr align="center">
                 <td>
-                    <img src="images/t4_CBbunny_m100.png" align="middle" width="65%;"/>
+                    <img src="images/t4_CBbunny_m100.png" align="middle" width="75%;"/>
                     <figcaption>max_ray_depth = 100 (CBbunny.dae)</figcaption>
                 </td>
             </tr>
@@ -629,52 +626,55 @@
     <br>
 
     <p>
-        YOUR EXPLANATION GOES HERE
+        As seen in the images above, the 0 max ray depth is the zero-bounce direct illumination, where the only light visible is the light emitted by the light source. The 1 max ray depth is the one-bounce direct illumination, where the light that's visible is the light from the light source and the light that bounces off objects once, before reaching the camera. The max ray depth 2, 3, and 100 rely on the recursive at-least-one-bounce function, and include both direct and indirect illumination. As the ray max depth increases, the amount of total light in the image increases, so the images become brighter as the max depth increases. The last image with max depth ray 100 has the most light and more colored light because more light bouncing off the colored walls is included in the total light calculation. The 100 max ray depth took the longest to render, around 5 minutes, whereas the other images took seconds.
     </p>
 
     <br>
 
     <h3>
-        Pick one scene and compare rendered views with various sample-per-pixel rates, including at least 1, 2, 4,
-        8, 16, 64, and 1024. Use 4 light rays.
+        Pick one scene and compare rendered views with various sample-per-pixel rates, including at least 1, 2, 4, 8, 16, 64, and 1024. Use 4 light rays.
     </h3>
-    <!-- Example of including multiple figures -->
+
+    <p>We picked <code>CBspheres_lambertian.dae</code> to compare rendered views with different sample per pixel rates. In the images below, all images were rendered with global illumination using 480x360 pixel resolution, 4 light rays, and 5 maximum ray depth. The sample rate varied from 1 to 1024.</p>
+
+    <br>
+
     <div align="middle">
         <table style="width:100%">
             <tr align="center">
                 <td>
-                    <img src="images/t4_CBspheres_s1.png" align="middle" width="50%;"/>
-                    <figcaption>1 sample per pixel (example1.dae)</figcaption>
+                    <img src="images/t4_CBspheres_s1.png" align="middle" width="75%;"/>
+                    <figcaption>1 sample per pixel (<code>CBspheres_lambertian.dae</code>)</figcaption>
                 </td>
                 <td>
-                    <img src="images/t4_CBspheres_s2.png" align="middle" width="50%;"/>
-                    <figcaption>2 samples per pixel (example1.dae)</figcaption>
-                </td>
-            </tr>
-            <tr align="center">
-                <td>
-                    <img src="images/t4_CBspheres_s4.png" align="middle" width="50%;"/>
-                    <figcaption>4 samples per pixel (example1.dae)</figcaption>
-                </td>
-                <td>
-                    <img src="images/t4_CBspheres_s8.png" align="middle" width="50%;"/>
-                    <figcaption>8 samples per pixel (example1.dae)</figcaption>
+                    <img src="images/t4_CBspheres_s2.png" align="middle" width="75%;"/>
+                    <figcaption>2 samples per pixel (<code>CBspheres_lambertian.dae</code>)</figcaption>
                 </td>
             </tr>
             <tr align="center">
                 <td>
-                    <img src="images/t4_CBspheres_s16.png" align="middle" width="50%;"/>
-                    <figcaption>16 samples per pixel (example1.dae)</figcaption>
+                    <img src="images/t4_CBspheres_s4.png" align="middle" width="75%;"/>
+                    <figcaption>4 samples per pixel (<code>CBspheres_lambertian.dae</code>)</figcaption>
                 </td>
                 <td>
-                    <img src="images/t4_CBspheres_s64.png" align="middle" width="50%;"/>
-                    <figcaption>64 samples per pixel (example1.dae)</figcaption>
+                    <img src="images/t4_CBspheres_s8.png" align="middle" width="75%;"/>
+                    <figcaption>8 samples per pixel (<code>CBspheres_lambertian.dae</code>)</figcaption>
                 </td>
             </tr>
             <tr align="center">
                 <td>
-                    <img src="images/t4_CBspheres_s1024.png" align="middle" width="50%;"/>
-                    <figcaption>1024 samples per pixel (example1.dae)</figcaption>
+                    <img src="images/t4_CBspheres_s16.png" align="middle" width="75%;"/>
+                    <figcaption>16 samples per pixel (<code>CBspheres_lambertian.dae</code>)</figcaption>
+                </td>
+                <td>
+                    <img src="images/t4_CBspheres_s64.png" align="middle" width="75%;"/>
+                    <figcaption>64 samples per pixel (<code>CBspheres_lambertian.dae</code>)</figcaption>
+                </td>
+            </tr>
+            <tr align="center">
+                <td>
+                    <img src="images/t4_CBspheres_s1024.png" align="middle" width="75%;"/>
+                    <figcaption>1024 samples per pixel (<code>CBspheres_lambertian.dae</code>)</figcaption>
                 </td>
             </tr>
         </table>
@@ -682,7 +682,7 @@
     <br>
 
     <p>
-        YOUR EXPLANATION GOES HERE
+        Images above
     </p>
     <br>
 
