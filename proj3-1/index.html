@@ -693,7 +693,7 @@
     <br>
 
     <p>
-        Images above
+        Images above illustrate the Monte Carlo Estimator in action. When we use 1 sample per pixel, the image is grainy and has a lot of noise, but is still realistically rendered with a good amount of light. However, since there's only 1 random sample per pixel, the approximation of the light in the scene is not accurate. With 2 samples per pixel, our image becomes less noisy, but it is still quite grainy. In particular, the spheres where there's light-to-dark transition look very choppy (the transition is noto smooth). With 4 and 8 sampler per pixel, the transitions become smoother, but you can still see a lot of noise in flat surfaces like the ceiling in the areas of fast transition like the bottom of the closer sphere. The 16 samples per pixel, most of the noise is in these transition areas. With 64 samples per pixel, most of the noise from flat surfaces is gone but there are still a few grainy areas on the spheres. With 1024 the image looks smooth with no grainy or noise appearance. Overall, even the 1 sample per pixel rendering captures the areas where there's a lot of light (the top fo the spheres directly facing the light) and where there's a lot of shadow (underneath the spheres). The images get progressively less grainy and noisy as the sample rate increases, with 64 samples showing some noise and 1024 having imperceptible amount of noise.
     </p>
     <br>
 
@@ -725,21 +725,21 @@
         <table style="width:100%">
             <tr align="center">
                 <td>
-                    <img src="images/p5_bunny.png" align="middle" width="400px"/>
+                    <img src="images/p5_bunny.png" align="middle" width="75%;"/>
                     <figcaption>Rendered image (CBbunny.dae)</figcaption>
                 </td>
                 <td>
-                    <img src="images/p5_bunny_rate.png" align="middle" width="400px"/>
+                    <img src="images/p5_bunny_rate.png" align="middle" width="75%;"/>
                     <figcaption>Sample rate image (CBbunny.dae)</figcaption>
                 </td>
             </tr>
             <tr align="center">
                 <td>
-                    <img src="images/p5_bench.png" align="middle" width="400px"/>
+                    <img src="images/p5_bench.png" align="middle" width="75%;"/>
                     <figcaption>Rendered image (bench.dae)</figcaption>
                 </td>
                 <td>
-                    <img src="images/p5_bench_rate.png" align="middle" width="400px"/>
+                    <img src="images/p5_bench_rate.png" align="middle" width="75%;"/>
                     <figcaption>Sample rate image (bench.dae)</figcaption>
                 </td>
             </tr>
