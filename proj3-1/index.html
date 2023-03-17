@@ -438,28 +438,28 @@
         <table style="width:100%">
             <tr align="center">
                 <td>
-                    <img src="images/p3_spheres_l1.png" align="middle" width="200px"/>
+                    <img src="images/p3_spheres_l1.png" align="middle" width="300px"/>
                     <figcaption>1 Light Ray (CBspheres_lambertian.dae)</figcaption>
                 </td>
                 <td>
-                    <img src="images/p3_spheres_l4.png" align="middle" width="200px"/>
+                    <img src="images/p3_spheres_l4.png" align="middle" width="300px"/>
                     <figcaption>4 Light Rays (CBspheres_lambertian.dae)</figcaption>
                 </td>
             </tr>
             <tr align="center">
                 <td>
-                    <img src="images/p3_spheres_l16.png" align="middle" width="200px"/>
+                    <img src="images/p3_spheres_l16.png" align="middle" width="300px"/>
                     <figcaption>16 Light Rays (CBspheres_lambertian.dae)</figcaption>
                 </td>
                 <td>
-                    <img src="images/p3_spheres_l64.png" align="middle" width="200px"/>
+                    <img src="images/p3_spheres_l64.png" align="middle" width="300px"/>
                     <figcaption>64 Light Rays (CBspheres_lambertian.dae)</figcaption>
                 </td>
             </tr>
         </table>
     </div>
     <p>
-        YOUR EXPLANATION GOES HERE
+        For all the images, the shadows can be seen as much more intense in the centre, and softening towards the edge. For the case with a single light sample (<code>-l 1</code>), because each pixel only has 1 sample and 1 light sample, the shadows were either at full intensity or not present at all. This is due to there being a singular light sample ray, meaning that the light was either reached or not. This leads to a speckled look, but from a distance it still gives the appearance of a shadow gradually softening out. As light samples increased, the shadows became softer and more gradual, and this is most obvious in the <code>-l 64</code> image.
     </p>
     <br>
 
@@ -467,8 +467,22 @@
         Compare the results between uniform hemisphere sampling and lighting sampling in a one-paragraph analysis.
     </h3>
     <p>
-        YOUR RESPONSE GOES HERE
+        Most noticeably, the importance sampling results contained much less noise for a given pixel sample and light sample rate. More subtly, highlights in the importance sampled images reached "further down" away from the light than in the uniform images. Notice that on the importance sampled spheres, especially the right sphere, around half of the sphere is lit. In comparison, the uniform sampled spheres have a much smaller lit portion. This is also noticeable in the top corners of the room where it meets the roof. This makes sense, as in a uniformly sampled approach, sampling an area that has a near perpendicular angle to the light has an improbably chance of hitting the light. By targeting the light itself, importance sampling allows these near perpendicular regions to receive lighting. These effects are also visible on the bunny, and are noted below.
     </p>
+	<div align="middle">
+        <table style="width:100%">
+            <tr align="center">
+                <td>
+                    <img src="images/p3_sphere_uniform_comp.png" align="middle" width="100%"/>
+                    <figcaption>1 Light Ray (CBspheres_lambertian.dae)</figcaption>
+                </td>
+                <td>
+                    <img src="images/p3_sphere_importance_comp.png" align="middle" width="100%"/>
+                    <figcaption>4 Light Rays (CBspheres_lambertian.dae)</figcaption>
+                </td>
+            </tr>
+        </table>
+    </div>
     <br>
 
 
