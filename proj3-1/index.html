@@ -108,9 +108,17 @@
         Explain the triangle intersection algorithm you implemented in your own words.
     </h3>
     <p>
-        YOUR RESPONSE GOES HERE
+        The triangle intersection algorithm was largely based on the concepts from <a href="https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/barycentric-coordinates.html">this webpage</a>, however all code in our project was written by us.
+		<br>The function <code>Triangle::has_intersection</code> uses the Inside-Outside test to determine if a point is within a triangle. First, the normal of the triangle's plane is calculated by finding the cross product between any 2 of the 3 vectors between the triangle's vertices. The ray's t value when intersecting this plane is checked, and if the t value is invalid (less than zero, outside of the ray's min_t/max_t values) then the function returns false. If the ray does intersect the plane, then the Inside-Outside test is done.
     </p>
-    <br>
+	<div align="middle">
+		<img src="images/p1_inside_outside.png" align="middle" width="40%"/>
+		<figcaption>Triangle with 3 vertices, and p' representing the ray's intersection point. The blue circle represents the normal of the triangle's plane, coming out of the page due to the counter-clockwise winding of the triangle. The blue normal would be going into the page if the winding was clockwise.</figcaption>
+    </div>
+	<p>
+	In the image above, we can see the triangle has a counter-clockwise winding, moving from p1 through to p3. The normal given by (p2 - p1)x(p3 - p1) points out of the page. If the winding was clockwise, then the normal would go into the page. The test consists of finding the cross product between (p2 - p1)x(p' - p1). If the point is to the left of the (p2 - p1) vector, then the cross product will also come out of the page. We can then find the dot product between the plane's normal, and the cross product given by (p2 - p1)x(p' - p1). If the result is above 0, we know they are both pointing in the same direction, out of the page. This test is then repeated for the other 2 possible vector combinations, ensuring that the dot product between (p3 - p2)x(p' - p2) and the plane's normal is above 0, and finally that the dot product between (p1 - p3)x(p' - p3) and the plane's normal is also above 0. Inverting the winding changes the direction of the plane's normal, but it also changes the direction of each cross product, so the test remains valid.
+	<br> If all these tests pass, we know the point is on the plane, the t value is valid, and the point is within the three triangle vertices.
+	</p>
 
     <h3>
         Show images with normal shading for a few small .dae files.
@@ -376,13 +384,28 @@
     <h3>
         Walk through both implementations of the direct lighting function.
     </h3>
-	<p>FROM THE SPEC: Walk through both implementations of the direct lighting function.
-		Show some images rendered with both implementations of the direct lighting function.
-		Focus on one particular scene with at least one area light and compare the noise levels in soft shadows when rendering with 1, 4, 16, and 64 light rays (the -l flag) and with 1 sample per pixel (the -s flag) using light sampling, not uniform hemisphere sampling.
-		Compare the results between uniform hemisphere sampling and lighting sampling in a one-paragraph analysis.
+	<p>
+	<i>Zero Bounce Radiance</i><br>
+	The <code>zero_bounce_radiance</code> function is meant to sample visible light sources within the scene, such as area lights. The function is fairly straightforward, and consists of simply retrieving the emission of any surface it intersects with. This emission is then multiplied by the cosine theta of the angle between the normal of the light, and the reverse direction of the incoming ray. This is calculated in the worldspace of the object being hit, and is the implementation of Lambert's cosine law, which is also included in the other radiance functions in Parts 3 and 4. This cosine theta value is not clamped, and is instead the absolute value is taken, as we assume that area lights are emissive on both the top and bottom side.
+	</p>
+	<p>
+	<i>One Bounce Radiance - Uniform Hemisphere Sampling</i><br>
+	The implementation of the <code>one_bounce_radiance</code> function consists of checking whether the <code>-H</code> flag is raised when the <code>pathtracer.exe</code> is invoked. The corresponding function is then called based on this flag.
+	<br>If <i>uniform hemisphere</i> sampling is selected, then the <code>estimate_direct_lighting_hemisphere</code> function is called. In this function, the number of samples taken, <code>num_samples</code>, is calculated by multiplying the number of lights in the scene by the number of samples per area light. This is done to maintain consistency between <code>estimate_direct_lighting_hemisphere</code> and <code>estimate_direct_lighting_importance</code>. Before this function can be described further, <code>bsdf::sample_f</code> must be explained.
+	<br><code>DiffuseBSDF::sample_f:</code> This function takes in the direction of the ray from the camera, <code>wo</code>, and produces a new direction for an outgoing ray, <code>wi</code>. The function also provides the probability of the ray heading in this certain direction, <code>pdf</code>. The function then finally returns the reflectance of the surface determined by the incoming and outgoing ray directions. This is done by calling the function <code>DiffuseBSDF::f</code>. Our implementation for <code>DiffuseBSDF::f</code> simply returns a constant, which is the reflectance of the bsdf divided by pi, as explained in <a href="https://cs184.eecs.berkeley.edu/sp20/lecture/14-6/intro-to-material-modeling">this slide</a>. This is due to the BSDF being specifically for a diffuse surface, which always scatters incoming light in a uniform hemisphere. This uniform hemisphere reflectance is also reflected in our <code>pdf</code> always being 1/2pi, which is one over the solid angle of a hemisphere. The <code>wi</code> returned is also generated randomly by calling the <code>sampler</code> method within the <code>BSDF</code> class.
+	<br> The <code>sample_f</code> call within <code>one_bounce_radiance</code> is used to provide the reflectance, as well as a new direction for our outgoing ray. This direction <code>wi</code> is converted from object to world space, and then it is checked for a collision using the <code>bvh::intersect</code> function. <code>bvh::intersect</code> returns <code>true</code> if an intersection is detected with a specified ray, and it also populates the provided <code>Intersection</code> struct. If an intersection is detected, the function returns <code>true</code> and we use the information inside the <code>Intersection</code> to calculate the emission of the intersected object, and the cosine theta of the angle of incidence, similar to <code>zero_bounce_radiance</code>. This cosine theta value is clamped to ensure that we only consider positive illuminance values. The cosine theta of the incoming radiance from the light onto the surface is also considered, and is also clamped. The radiance is also divided by the distance to the light, which is given by the t value of the new intersection object. This is done to emulate the phenomen of light intensity falloff in real life.  As mentioned in lectures, the radiance is only divided by the distance and not the distance squared, as it actually looks better this way. Finally, the radiance from the light in this specific direction is multiplied by the returned reflectance of the current surface, as well as the corresponding cosine theta values, and is divided by the pdf, or the chance of the ray being sent in that direction. The function returns the cumulative radiance of all the different light samples returned by rays sent from the current surface hit point.
+	<p>
+	<div align="middle">
+		<img src="images/t3.3_diagram.png" align="middle" width="100%;"/>
+		<figcaption>Diagram of our <code>one_bounce_radiance</code> function. <code>theta_camera</code> is taken care of in our <code>BSDF::f</code> function. <code>theta_i</code> and <code>theta_light</code> are calculated using the object spaces generated at their respective intersections.</figcaption>
+    </div>
+	<br>
+	<i>One Bounce Radiance - Light Importance Sampling</i><br>
 	</p>
     <p>
-        YOUR RESPONSE GOES HERE
+        Overall, the <code>estimate_direct_lighting_importance</code> function is similar in structure to <code>estimate_direct_lighting_hemisphere</code>. However, there are some key differences. The function iterates over every light in the scene, and samples them each at a time. If the light is a delta light, then it is only sampled once before iterating to the next light, but if it is not a delta light then it is sampled multiple times according to the <code>-l</code> flag. The ray that is sent to sample the light is also done so directly to the light, and the direction is taken by using the <code>SceneLight::sample_L</code> function. <code>SceneLight::sample_L</code> is similar to <code>BSDF::sample_F</code>, and returns/edits many of the same variables, but takes in the point from which the ray originated, and returns the distance to the light itself alongside the radiance and direction. The distance to the light is taken into consideration, and the returned radiance of the light is divided by this distance to emulate real life light falloff.
+		<br>The new ray that is sent towards the light is also a "shadow ray." The light calculations are only performed if the ray <i>doesn't</i> intersect a scene object. If a scene object is intersected, then no radiance is added for the current sample. The shadow ray is created by setting the <code>max_t</code> for the ray to be the distance to the light, minus a small delta. This means that the light itself is never sampled directly, as the information required to calculate the radiance was already retrieved from the <code>sample_L</code> function call.
+		<br>Lastly, when calculating the irradiance from each light, the type of light is considered, just as with uniform hemisphere sampling. Delta lights don't need to be divided by the number of samples per area light. Infinite Hemisphere and Directional lights both don't have a valid distance to light, so light falloff isn't considered. Point lights and Area lights do, and so falloff is considered.
     </p>
 
     <h3>
@@ -470,18 +493,8 @@
         Most noticeably, the importance sampling results contained much less noise for a given pixel sample and light sample rate. More subtly, highlights in the importance sampled images reached "further down" away from the light than in the uniform images. Notice that on the importance sampled spheres, especially the right sphere, around half of the sphere is lit. In comparison, the uniform sampled spheres have a much smaller lit portion. This is also noticeable in the top corners of the room where it meets the roof. This makes sense, as in a uniformly sampled approach, sampling an area that has a near perpendicular angle to the light has an improbably chance of hitting the light. By targeting the light itself, importance sampling allows these near perpendicular regions to receive lighting. These effects are also visible on the bunny, and are noted below.
     </p>
 	<div align="middle">
-        <table style="width:100%">
-            <tr align="center">
-                <td>
-                    <img src="images/p3_sphere_uniform_comp.png" align="middle" width="100%"/>
-                    <figcaption>1 Light Ray (CBspheres_lambertian.dae)</figcaption>
-                </td>
-                <td>
-                    <img src="images/p3_sphere_importance_comp.png" align="middle" width="100%"/>
-                    <figcaption>4 Light Rays (CBspheres_lambertian.dae)</figcaption>
-                </td>
-            </tr>
-        </table>
+		<img src="images/p3_comp.png" align="middle" width="50%"/>
+		<figcaption>1 Light Ray (CBspheres_lambertian.dae)</figcaption>
     </div>
     <br>
 
