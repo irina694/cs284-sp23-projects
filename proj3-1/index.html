@@ -97,7 +97,8 @@
         Walk through the ray generation and primitive intersection parts of the rendering pipeline.
     </h3>
     <p>
-        - 
+        - Within <code>Pathtracer::raytrace_pixel</code>, each pixel is iterated over, and <code>ns_aa</code> rays are generated for each pixel using the <code>Camera::generate_ray</code> function. These rays are each passed into <code>est_radiance_global_illumination</code>, which selects the appropriate lighting method according to the launch options.
+		<br><code>Camera::generate_ray</code> calls the helper function, <code>Camera::image_to_camera_coordinate</code>. This helper function converts the given x and y relative coordinates into appropriate camera space coordinates.
     </p>
 	<p>
 
