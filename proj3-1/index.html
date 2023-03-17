@@ -549,10 +549,12 @@
     <p>
         Most noticeably, the importance sampling results contained much less noise for a given pixel sample and light sample rate. More subtly, highlights in the importance sampled images reached "further down" away from the light than in the uniform images. Notice that on the importance sampled spheres, especially the right sphere, around half of the sphere is lit. In comparison, the uniform sampled spheres have a much smaller lit portion. This is also noticeable in the top corners of the room where it meets the roof. This makes sense, as in a uniformly sampled approach, sampling an area that has a near perpendicular angle to the light has an improbably chance of hitting the light. By targeting the light itself, importance sampling allows these near perpendicular regions to receive lighting. These effects are also visible on the bunny, and are noted below.
     </p>
+
 	<div align="middle">
 		<img src="images/p3_comp.png" align="middle" width="50%"/>
 		<figcaption>1 Light Ray (CBspheres_lambertian.dae)</figcaption>
     </div>
+
     <br>
 
 
@@ -740,20 +742,23 @@
     <h3>
         Explain adaptive sampling. Walk through your implementation of the adaptive sampling.
     </h3>
-	<p>FROM THE SPEC:</p>
-	<p>Explain adaptive sampling. Walk through your implementation of the adaptive sampling.
-		Pick two scenes and render them with at least 2048 samples per pixel. Show a good sampling rate image with clearly visible differences in sampling rate over various regions and pixels. Include both your sample rate image, which shows your how your adaptive sampling changes depending on which part of the image you are rendering, and your noise-free rendered result. Use 1 sample per light and at least 5 for max ray depth.</p>
 
-    <p>
-        YOUR RESPONSE GOES HERE
+	<p>
+        Adaptive sampling is a technique to reduce the amount of noise produced by the Monte Carlo Estimator, seen in Parts 3 and 4. Rather than sampling every part of the image uniformly, adaptive sampling gets more samples from the regions that are more difficult to render. To determine which regions are more difficult to sample, we use statistical approach to measure each pixel's convergence, given by the formula below. The sigma is the variance and n is the number of samples. We check the convergence against a maximum tolerance times the mean of that pixel's value, calculated as the average of the n samples.
     </p>
+
+    <div align="middle">
+        <img src="images/t5_convergence_formula.png" align="middle" width="20%"/>
+        <figcaption>Pixel convergence formula (credit: <a href="https://cs184.eecs.berkeley.edu/sp23/docs/proj3-1-part-5" target="_blank">Project Spec</a>).</figcaption>
+    </div>
+
+
+    <p>In the <code>PathTracer::raytrace_pixel</code>, we calculate the convergence of each pixel <code>n</code> times, where <code>n</code> is the number of samples. We find the illuminance for every sample and for every <code>samplesPerBatch</code>, we find statistical mean and standard deviation. We then check if the pixel value converges as 1.96 times the standard deviation divided by the square root of the variance. If the pixel converges, we stop calculating its radiance and add it to the overall radiance integral.</p>
+
     <br>
 
     <h3>
-        Pick two scenes and render them with at least 2048 samples per pixel. Show a good sampling rate image with
-        clearly visible differences in sampling rate over various regions and pixels. Include both your sample rate
-        image, which shows your how your adaptive sampling changes depending on which part of the image you are
-        rendering, and your noise-free rendered result. Use 1 sample per light and at least 5 for max ray depth.
+        Pick two scenes and render them with at least 2048 samples per pixel. Show a good sampling rate image with clearly visible differences in sampling rate over various regions and pixels. Include both your sample rate image, which shows your how your adaptive sampling changes depending on which part of the image you are rendering, and your noise-free rendered result. Use 1 sample per light and at least 5 for max ray depth.
     </h3>
     <!-- Example of including multiple figures -->
     <div align="middle">
@@ -780,10 +785,11 @@
             </tr>
         </table>
     </div>
+
     <br>
 
 
-	<p>At the end, if you worked with a partner, please write a short paragraph together for your final report that describes how you collaborated, how it went, and what you learned.</p>
+	<p>This project was a team effort. We worked on each part by ourselves first, then met to discuss the solution. When we encountered bugs or were unsure about the concepts, we worked on the code together. In the end, we each worked on all parts of the project, either as the main author or as a debugger. We pair-programmed the more difficult parts of the project, such as part 3.3. We both contributed to the project write-up, checking our understanding of all parts of this project. Overall, it was both challenging and rewarding.</p>
 
 	<h3 align="middle">Website URL: <a href="https://irina694.github.io/cs284-sp23-projects/proj3-1/">https://irina694.github.io/cs284-sp23-projects/proj3-1</a>
 	</h3>
