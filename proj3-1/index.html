@@ -97,7 +97,7 @@
         Walk through the ray generation and primitive intersection parts of the rendering pipeline.
     </h3>
     <p>
-        For Part 1, we start with generating a ray, given to us by the normalized <code>(x, y)</code> 2D image coordinate. We have two coordinate systems: the 3D world coordinate system where objects are located, and the 3D camera coordinate system. First, we convert the given normalized image coordinate of where the ray intersects the scene into the camera coordinate system. We know where the camera is located in the world coordinate system with respect to the third axis (<code>z</code>), so we need to find what <code>x</code> and <code>y</code> are in the camera space. To do that, we scale the <code>x</code> and <code>y</code> coordinates by the image size, since we know that the camera space spans from <code>-tan(hFov/2)</code> to <code>tan(nFov/2)</code> in the <code>x</code>-direction, and from <code>-tan(vFov/2)</code> to <code>tan(vFov/2)</code> in the <code>x</code>-direction. The <code>hFov</code> is the angle of the horizontal field of view and <code>vFov</code> is the angle of the field of view in the vertical dimension. Given the coordinate <code>(x,y)</code> in camera space, we find the direction of the ray. The direction of the ray is from the camera origin <code>(0, 0, 0)</code> through the point where ray intersected the sensor plate, in camera coordinate system. Next, we convert the ray from camera to world coordinates. We set the ray's origin as the camera's position in world space and we normalize the direction of the ray in world coordinate system. Finally, we set the ray's minimum time to the near clipping plane, and ray's maximum time to the far clipping plane, since rays outside the camera clipping planes are invisible to the camera.
+        For Part 1, we start with generating a ray, given to us by the normalized <code>(x, y)</code> 2D image coordinate. We have two coordinate systems: the 3D world coordinate system where objects are located, and the 3D camera coordinate system. First, we convert the given normalized image coordinate of where the ray intersects the scene into the camera coordinate system. We know where the camera is located in the world coordinate system with respect to the third axis (<code>z</code>), so we need to find what <code>x</code> and <code>y</code> are in the camera space. To do that, we scale the <code>x</code> and <code>y</code> coordinates by the image size, since we know that the camera space spans from <code>-tan(hFov/2)</code> to <code>tan(nFov/2)</code> in the <code>x</code>-direction, and from <code>-tan(vFov/2)</code> to <code>tan(vFov/2)</code> in the <code>y</code>-direction. The <code>hFov</code> is the angle of the horizontal field of view and <code>vFov</code> is the angle of the field of view in the vertical dimension. Given the coordinate <code>(x,y)</code> in camera space, we find the direction of the ray. The direction of the ray is from the camera origin <code>(0, 0, 0)</code> through the point where ray intersected the sensor plate, in camera coordinate system. Next, we convert the ray from camera to world coordinates. We set the ray's origin as the camera's position in world space and we normalize the direction of the ray in world coordinate system. Finally, we set the ray's minimum time to the near clipping plane, and ray's maximum time to the far clipping plane, since rays outside the camera clipping planes are invisible to the camera.
 
     </p>
 
@@ -109,7 +109,7 @@
     </div>
 
 	<p>
-
+        TODO: walk through primitive intersection parts of the rendering pipeline.
 	</p>
     <br>
 
@@ -641,37 +641,37 @@
         <table style="width:100%">
             <tr align="center">
                 <td>
-                    <img src="images/your_file.png" align="middle" width="400px"/>
+                    <img src="images/t4_CBspheres_s1.png" align="middle" width="50%;"/>
                     <figcaption>1 sample per pixel (example1.dae)</figcaption>
                 </td>
                 <td>
-                    <img src="images/your_file.png" align="middle" width="400px"/>
+                    <img src="images/t4_CBspheres_s2.png" align="middle" width="50%;"/>
                     <figcaption>2 samples per pixel (example1.dae)</figcaption>
                 </td>
             </tr>
             <tr align="center">
                 <td>
-                    <img src="images/your_file.png" align="middle" width="400px"/>
+                    <img src="images/t4_CBspheres_s4.png" align="middle" width="50%;"/>
                     <figcaption>4 samples per pixel (example1.dae)</figcaption>
                 </td>
                 <td>
-                    <img src="images/your_file.png" align="middle" width="400px"/>
+                    <img src="images/t4_CBspheres_s8.png" align="middle" width="50%;"/>
                     <figcaption>8 samples per pixel (example1.dae)</figcaption>
                 </td>
             </tr>
             <tr align="center">
                 <td>
-                    <img src="images/your_file.png" align="middle" width="400px"/>
+                    <img src="images/t4_CBspheres_s16.png" align="middle" width="50%;"/>
                     <figcaption>16 samples per pixel (example1.dae)</figcaption>
                 </td>
                 <td>
-                    <img src="images/your_file.png" align="middle" width="400px"/>
+                    <img src="images/t4_CBspheres_s64.png" align="middle" width="50%;"/>
                     <figcaption>64 samples per pixel (example1.dae)</figcaption>
                 </td>
             </tr>
             <tr align="center">
                 <td>
-                    <img src="images/your_file.png" align="middle" width="400px"/>
+                    <img src="images/t4_CBspheres_s1024.png" align="middle" width="50%;"/>
                     <figcaption>1024 samples per pixel (example1.dae)</figcaption>
                 </td>
             </tr>
