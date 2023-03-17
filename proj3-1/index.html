@@ -646,7 +646,7 @@
         Pick one scene and compare rendered views with various sample-per-pixel rates, including at least 1, 2, 4, 8, 16, 64, and 1024. Use 4 light rays.
     </h3>
 
-    <p>We picked <code>CBspheres_lambertian.dae</code> to compare rendered views with different sample per pixel rates. In the images below, all images were rendered with global illumination using 480x360 pixel resolution, 4 light rays, and 5 maximum ray depth. The sample rate varied from 1 to 1024.</p>
+    <p>We picked <code>CBspheres_lambertian.dae</code> to compare rendered views with different sample per pixel rates. In the images below, all images were rendered with global illumination using 480x360 pixel resolution, 4 light rays, and 5 maximum ray depth. The sample rate varied from 1 to 2048.</p>
 
     <br>
 
@@ -687,13 +687,17 @@
                     <img src="images/t4_CBspheres_s1024.png" align="middle" width="75%;"/>
                     <figcaption>1024 samples per pixel (<code>CBspheres_lambertian.dae</code>)</figcaption>
                 </td>
+                <td>
+                    <img src="images/t4_CBspheres_s2048.png" align="middle" width="75%;"/>
+                    <figcaption>2048 samples per pixel (<code>CBspheres_lambertian.dae</code>)</figcaption>
+                </td>
             </tr>
         </table>
     </div>
     <br>
 
     <p>
-        Images above illustrate the Monte Carlo Estimator in action. When we use 1 sample per pixel, the image is grainy and has a lot of noise, but is still realistically rendered with a good amount of light. However, since there's only 1 random sample per pixel, the approximation of the light in the scene is not accurate. With 2 samples per pixel, our image becomes less noisy, but it is still quite grainy. In particular, the spheres where there's light-to-dark transition look very choppy (the transition is noto smooth). With 4 and 8 sampler per pixel, the transitions become smoother, but you can still see a lot of noise in flat surfaces like the ceiling in the areas of fast transition like the bottom of the closer sphere. The 16 samples per pixel, most of the noise is in these transition areas. With 64 samples per pixel, most of the noise from flat surfaces is gone but there are still a few grainy areas on the spheres. With 1024 the image looks smooth with no grainy or noise appearance. Overall, even the 1 sample per pixel rendering captures the areas where there's a lot of light (the top fo the spheres directly facing the light) and where there's a lot of shadow (underneath the spheres). The images get progressively less grainy and noisy as the sample rate increases, with 64 samples showing some noise and 1024 having imperceptible amount of noise.
+        Images above illustrate the Monte Carlo Estimator in action. When we use 1 sample per pixel, the image is grainy and has a lot of noise, but is still realistically rendered with a good amount of light. However, since there's only 1 random sample per pixel, the approximation of the color in each pixel in the image is not accurate. With 2 samples per pixel, our image becomes less noisy, but it is still quite grainy. In particular, the spheres where there's light-to-dark transition look very choppy (the transition is not smooth). With 4 and 8 sampler per pixel, the transitions become smoother, but you can still see a lot of noise in flat surfaces like the ceiling and in the areas of fast color change like the bottom of the closer sphere. The 16 samples per pixel, most of the noise is in these transition areas. With 64 samples per pixel, most of the noise from flat surfaces is gone but there are still a few grainy areas on the spheres. With 1024 the image looks smooth with no grainy or noise appearance. Overall, even the 1 sample per pixel rendering captures the areas where there's a lot of light (the top of the spheres directly facing the light) and where there's a lot of shadow (underneath the spheres). The images get progressively less grainy and more smooth as the sample rate increases, with 64 samples showing some noise and 1024 having imperceptible amount of noise. The 2048 samples per pixel looks very close to the 1024 samples per pixel because our estimation of light converges to the true solution, so the difference in pixel color value is barely noticeable.
     </p>
     <br>
 
