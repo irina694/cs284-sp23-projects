@@ -201,7 +201,7 @@
 
 	<p>We constructed our BVH as follows:</p>
 
-	<p>We construct the BVH recursively. At the start of the rendering, the lists of primitives are empty. We then construct the root node and point its <code>start</code> and <code>end</code> properties to the given empty lists of primitives. We then compute the bounding boxes for all primitives and count how many primitives there are. The figure below shows an example of the BVH, visualized on the <code>cow.dae</code> file. The left part of the BVH is highlighted in red.
+	<p>We construct the BVH recursively. We construct the root node and point its <code>start</code> and <code>end</code> properties to the given list of primitives. We then compute the bounding box for all primitives and count how many primitives there are. The figure below shows an example of the BVH, visualized on the <code>cow.dae</code> file. The left part of the BVH is highlighted in red.
 	</p>
 
     <div align="middle">
@@ -217,14 +217,14 @@
 
 	<p>
 	In the base case, if the number of primitives is less than maximum leaf size, we set the start and end pointers of the node to return.</p>
-    <p></p>Otherwise, we get the median primitive by dividing the total primitive count by 2. Then, we sort all primitives. This is done by seeing which bounding box axis is the largest, then sorting it along this axis. We created custom functions to compare the centroids of bounding boxes (<code>sortByX</code>, <code>sortByY</code>, and <code>sortByZ</code>, which take the corresponding axis value for the input primitive's centroid, and returns true if the first item is smaller than the second item.</p>
+    <p></p>Otherwise, we get the median primitive by dividing the total primitive count by 2.Then, we sort all primitives. This is done by seeing which bounding box axis is the largest, then sorting it along this axis. We created custom functions to compare the centroids of bounding boxes (<code>sortByX</code>, <code>sortByY</code>, and <code>sortByZ</code>), which take the corresponding axis value for the input primitive's centroid, and returns true if the first item is smaller than the second item.</p>
     <p>The downside of this method is that we need to sort all the primitives every recursive call. Although this isn't very efficient, it is necessary because a child bounding box isn't guaranteed to have the same largest axis as its parent.</p>
     <p>Once the list is sorted, we recursively call the <code>construct_bvh</code> function on the left and right side, which become the left and right nodes of the root node. The two halves are created from the sorted list divided at the median primitive.</p>
-    <p> Our debugging journey was the following:</p>
+    <p> Our debugging journey included the following:</p>
     <ul>
-        <li>Took a while to realise that end() iterators point to the element AFTER the end, so no need to add + 1 to the start of the right child bbox func call</li>
-        <li>At first, the idea was to take the average value of centroids, but it became clear that it is pretty common for almost all of the centroids in current bounding box to be the same along an axis, meaning that one child would be empty and there would be an infinite loop. Sorting by median means that it is guaranteed that child nodes are equal in terms of number of primitives.</li>
-        <li>Used to create a new vector of primitive pointers on heap when at the base case, but realised that sorting in place makes it easier to handle and avoids potential memory leaks.</li>
+        <li>It took a while to realise that end() iterators point to the element AFTER the end, so there was no need to add + 1 to the start of the right child bounding box function call</li>
+        <li>At first, the idea was to take the average value of centroids, but it became clear that it was pretty common for almost all of the centroids in current bounding box to share an average centroid value, meaning that one child would be empty, and an infinite loop would occur. Sorting by median means it is guaranteed that child nodes have an equal number of primitives.</li>
+        <li>At first, we created a new vector of primitive pointers on the heap when reaching the base case, but then we realised that sorting in place was possible, more memory efficient, and avoided any potential memory leaks.</li>
     </ul>
 
     <h3>
@@ -571,7 +571,7 @@
 
     <!-- Walk through your implementation of the indirect lighting function.
    Show some images rendered with global (direct and indirect) illumination. Use 1024 samples per pixel.-->
-   <p>Global illumination consists of direct and indirect light. The indirect lightning comes from light bouncing off objects in the scene several times before reaching the camera. We implemented global illumination by adding together zero-bounce (direct) and the at-least-one-bounce radiance (indirect). The zero-bounce radiance displays light directly from the light source. The at-least-one-bounce-radiance collects and displays light by adding radiance from rays bouncing at least once and bouncing multiple times, until a termination condition is reached. We used recursion to implement <code>at_least_one_bounce_radiance</code> and used the Russian Roulette as the unbiased probabilistic termination condition. The Russian Roulette ensures that all rays stop. We set the probability of stopping to 0.3. The rays also stop if they reach their maximum depth, to avoid long termination times. The non-recursive base case calls the <code>one_bounce_radiance</code> function for whichever segment or depth the ray reaches at the end. We decrement the ray's depth on each recursive call, so the recursion collects the radiance from the point of the last ray's intersection (the maximum depth), and then adds the radiance as it recurses back up the stack, until the non-recursive case of <code>one_bounce_radiance</code> is reached. </p>
+   <p>Global illumination consists of direct and indirect light. The indirect lightning comes from light bouncing off objects in the scene several times before reaching the camera. We implemented global illumination by adding together zero-bounce (direct) and the at-least-one-bounce radiance (indirect). The zero-bounce radiance displays light directly from the light source. The at-least-one-bounce-radiance collects and displays light by adding radiance from rays bouncing at least once and bouncing multiple times, until a termination condition is reached. We used recursion to implement <code>at_least_one_bounce_radiance</code> and used the Russian Roulette as the unbiased probabilistic termination condition. The Russian Roulette ensures that all rays stop. We set the probability of stopping to 0.3. The rays also stop if they reach their maximum depth, to avoid long termination times. The <code>at_least_one_bounce_radiance</code> function never actually tries to sample a light source itself, and calls the <code>one_bounce_radiance</code> to sample radiance. We decrement the ray's depth on each recursive call, so the recursion collects the radiance from the point of the last ray's intersection (the maximum depth), and then adds the radiance as it recurses back up the stack, until the initial <code>at_least_one_bounce_radiance</code> call is reached. </p>
 
     <p>For each pixel, on each recursive call, we collect the amount of light at each bounce, then add the light from all bounces together to get the overall global illumination. We recursively create new rays at each intersection point (bounce), until the ray stops either by reaching the maximum depth or by the Russian Roulette (the coin flip, which returns a boolean that stops the recursion).</p>
 
@@ -785,11 +785,14 @@
             </tr>
         </table>
     </div>
+	<p>
+	Unfortunately, our implementation did not exactly match the reference solution images in the spec. However, we can clearly see that areas that have either full light or no light are fully blue, meaning they converged quickly. This is seen with the areas outside of the box and the bench, as well as the top of the bunny. The most sampled areas are the red, and those are the ones that are in the shade. This makes sense, as these darker areas have the most potential to change in lighting depending on where the indirect bounces go.
+	</p>
 
     <br>
 
 
-	<p>This project was a team effort. We worked on each part by ourselves first, then met to discuss the solution. When we encountered bugs or were unsure about the concepts, we worked on the code together. In the end, we each worked on all parts of the project, either as the main author or as a debugger. We pair-programmed the more difficult parts of the project, such as part 3.3. We both contributed to the project write-up, checking our understanding of all parts of this project. Overall, it was both challenging and rewarding.</p>
+	<p>This project was a team effort. We worked on each part by ourselves first, then met to discuss the solution. When we encountered bugs or were unsure about the concepts, we worked on the code together. In the end, we each worked on all parts of the project, either as the main author or as a debugger. We pair-programmed the more difficult parts of the project, such as part 3.3. We both contributed to the project write-up, checking our understanding of all parts of this project. If someone coded more of the implementation for a certain part or function, we alternated the writeup, so that the person who didn't write the bulk of the code could have a chance to read through and understand the code. Overall, it was both challenging and rewarding.</p>
 
 	<h3 align="middle">Website URL: <a href="https://irina694.github.io/cs284-sp23-projects/proj3-1/">https://irina694.github.io/cs284-sp23-projects/proj3-1</a>
 	</h3>
