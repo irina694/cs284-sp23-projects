@@ -118,21 +118,21 @@
         </div>
 
         <p><b>
-            Show a sequence of six images of scene `CBspheres.dae` rendered with `max_ray_depth` set to 0, 1, 2, 3, 4, 5, and 100. The other settings should be at least 64 samples per pixel and 4 samples per light. Make sure to include all screenshots.
+            <i>Show a sequence of six images of scene `CBspheres.dae` rendered with `max_ray_depth` set to 0, 1, 2, 3, 4, 5, and 100. The other settings should be at least 64 samples per pixel and 4 samples per light. Make sure to include all screenshots.</i>
         </b></p>
         <p>
             Your response goes here.
         </p>
         <br>
         <p><b>
-            Point out the new multibounce effects that appear in each image. 
+            <i>Point out the new multibounce effects that appear in each image. </i>
         </b></p>
         <p>
             Your response goes here.
         </p>
         <br>
         <p><b>
-            Explain how these bounce numbers relate to the particular effects that appear. Make sure to include all screenshots.
+            <i>Explain how these bounce numbers relate to the particular effects that appear. Make sure to include all screenshots.</i>
         </b></p>
         <p>
             Your response goes here.
@@ -142,31 +142,80 @@
 
         <h3 align="middle">Part 2. Microfacet Material</h3>
         <p><b>
-            Show a screenshot sequence of 4 images of scene `CBdragon_microfacet_au.dae` rendered with $\alpha$ set to 0.005, 0.05, 0.25 and 0.5. The other settings should be at least 128 samples per pixel and 1 samples per light. The number of bounces should be at least 5. Describe the differences between different images. Note that, to change the $\alpha$, just open the .dae file and search for `microfacet`.
+            <i>Show a screenshot sequence of 4 images of scene `CBdragon_microfacet_au.dae` rendered with $\alpha$ set to 0.005, 0.05, 0.25 and 0.5. The other settings should be at least 128 samples per pixel and 1 samples per light. The number of bounces should be at least 5. Describe the differences between different images. Note that, to change the $\alpha$, just open the .dae file and search for `microfacet`.</i>
         </b></p>
+		
+		<div align="middle">
+			<table style="width:100%">
+				<tr align="center">
+					<td>
+						<img src="./images/CBdragon_alpha_0.5.png" align="middle" width="75%;" />
+						<figcaption align="middle"><code>CBdragon_microfacet_au.dae</code> with $\alpha$ = 0.5.</figcaption>
+					</td>
+					<td>
+						<img src="./images/CBdragon_alpha_0.25.png" align="middle" width="75%;" />
+						<figcaption align="middle"><code>CBdragon_microfacet_au.dae</code> with $\alpha$ = 0.25.</figcaption>
+					</td>
+				</tr>
+				<tr align="center">
+					<td>
+						<img src="./images/CBdragon_alpha_0.05.png" align="middle" width="75%;" />
+						<figcaption align="middle"><code>CBdragon_microfacet_au.dae</code> with $\alpha$ = 0.05.</figcaption>
+					</td>
+					<td>
+						<img src="./images/CBdragon_alpha_0.005.png" align="middle" width="75%;" />
+						<figcaption align="middle"><code>CBdragon_microfacet_au.dae</code> with $\alpha$ = 0.005.</figcaption>
+					</td>
+				</tr>
+			</table>
+		</div>
+		
         <p>
-            Your response goes here.
+		WORDS
         </p>
+		
         <br>
         <p><b>
-            Show two images of scene `CBbunny_microfacet_cu.dae` rendered using cosine hemisphere sampling (default) and your importance sampling. The sampling rate should be fixed at 64 samples per pixel and 1 samples per light. The number of bounces should be at least 5. Briefly discuss their difference.
+            <i>Show two images of scene `CBbunny_microfacet_cu.dae` rendered using cosine hemisphere sampling (default) and your importance sampling. The sampling rate should be fixed at 64 samples per pixel and 1 samples per light. The number of bounces should be at least 5. Briefly discuss their difference.</i>
         </b></p>
+		
+		<div align="middle">
+			<table style="width:100%">
+				<td>
+					<img src="./images/CBbunny_importance.png" align="middle" width="90%;" />
+					<figcaption align="middle"><code>CBbunny_microfacet_cu.dae</code> with Importance Sampling.</figcaption>
+				</td>
+				<td>
+					<img src="./images/CBbunny_uniform.png" align="middle" width="90%;" />
+					<figcaption align="middle"><code>CBbunny_microfacet_cu.dae</code> with Uniform Sampling.</figcaption>
+				</td>
+			</table>
+		</div>
+		
         <p>
-            Your response goes here.
+            WORDS AGAIN
         </p>
         <br>
+		
         <p><b>
-            Show at least one image with some other conductor material, replacing `eta` and `k`. Note that you should look up values for real data rather than modifying them arbitrarily. Tell us what kind of material your parameters correspond to. 
+            <i>Show at least one image with some other conductor material, replacing `eta` and `k`. Note that you should look up values for real data rather than modifying them arbitrarily. Tell us what kind of material your parameters correspond to.</i>
         </b></p>
+		
+		<div align="middle">
+			<img src="./images/CBbunny_li.png" align="middle" width="90%;" />
+			<figcaption align="middle"><code>CBbunny_microfacet_cu.dae</code> with manganese metal refractive index.</figcaption>
+		</div>
+		
         <p>
-            Your response goes here.
+            Manganese. n is eta (weird greek letter) in the code, k is k in the code.
+			These values I yoinked from the refractive index website they linked in the spec. I replaced the values in the code with the ones below:
+			<br>@ 614nm (red): n = 2.5066, k = 3.5306
+			<br>@ 549nm (green): n = 2.39, k = 3.33
+			<br>@ 466nm (blue): n = 2.17, k = 3.04
         </p>
         <br>
-        
-        
-        
 
-        <h3 align="middle">Part 3. Environment Lightl</h3>
+        <h3 align="middle">Part 3. Environment Light</h3>
         <b>Pick one *.exr* file to use for all subparts here. Include a converted *.jpg* of it in your website so we know what map you are using.</b>
         
         <p><b>
