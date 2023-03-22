@@ -120,25 +120,56 @@
         <p><b>
             <i>Show a sequence of six images of scene `CBspheres.dae` rendered with `max_ray_depth` set to 0, 1, 2, 3, 4, 5, and 100. The other settings should be at least 64 samples per pixel and 4 samples per light. Make sure to include all screenshots.</i>
         </b></p>
+		
+		<div align="middle">
+			<table style="width:100%">
+				<tr align="center">
+					<img src="./images/CBspheres_m100.png" align="middle" width="50%;" />
+					<figcaption align="middle"><code>CBspheres.dae</code> with m = 100.</figcaption>
+				</tr>
+				<tr align="center">
+					<td>
+						<img src="./images/CBspheres_m5.png" align="middle" width="75%;" />
+						<figcaption align="middle"><code>CBspheres.dae</code> with m = 5.</figcaption>
+					</td>
+					<td>
+						<img src="./images/CBspheres_m4.png" align="middle" width="75%;" />
+						<figcaption align="middle"><code>CBspheres.dae</code> with m = 4.</figcaption>
+					</td>
+				</tr>
+				<tr align="center">
+					<td>
+						<img src="./images/CBspheres_m3.png" align="middle" width="75%;" />
+						<figcaption align="middle"><code>CBspheres.dae</code> with m = 3.</figcaption>
+					</td>
+					<td>
+						<img src="./images/CBspheres_m2.png" align="middle" width="75%;" />
+						<figcaption align="middle"><code>CBspheres.dae</code> with m = 2.</figcaption>
+					</td>
+				</tr>
+				<tr align="center">
+					<td>
+						<img src="./images/CBspheres_m1.png" align="middle" width="75%;" />
+						<figcaption align="middle"><code>CBspheres.dae</code> with m = 1.</figcaption>
+					</td>
+					<td>
+						<img src="./images/CBspheres_m0.png" align="middle" width="75%;" />
+						<figcaption align="middle"><code>CBspheres.dae</code> with m = 0.</figcaption>
+					</td>
+				</tr>
+			</table>
+		</div>
+		
         <p>
-            Your response goes here.
+            All CBspheres.dae rendered with -s 128 and -l 8.
+			<br> At m = 0, only <code>zero_bounce_radiance</code> is counted, so only the light is sampled.
+			<br>Similarly, when m = 1, only <code>one_bounce_radiance</code> is counted, so the mirror and glass balls don't have a change to reflect or refract any rays, leading to their black appearance, except for the small portion which directly reflects the light.
+			<br>We can see that reflections of the room appear at m = 2, with the perfect mirror ball showing a much brighter reflection than the glass ball. Some of the limits of 2 bounces include the refracted rays in the glass ball not being able to reach any form of light, and the reflections in the mirror ball of the roof and glass ball similarly not being able to reach a light source within the small number of bounces.
+			<br>At m = 3, the glass ball's refracted rays are able to exit the other side, leading to a transparent object, and the reflection of the roof in the mirror ball is now lit. The refracted light in the glass ball also now casts a concentrated bright spot on the floor.
+			<br>At m = 4, this concentrated spot is now reflected onto the right wall. The reflection of the glass ball in the mirror ball is also now visible.
+			<br>At m = 5, there aren't any noticeable changes, and this is also true for m = 100. m = 4 is roughly the sweet spot where all the elements appear to be rendering properly.
         </p>
         <br>
-        <p><b>
-            <i>Point out the new multibounce effects that appear in each image. </i>
-        </b></p>
-        <p>
-            Your response goes here.
-        </p>
-        <br>
-        <p><b>
-            <i>Explain how these bounce numbers relate to the particular effects that appear. Make sure to include all screenshots.</i>
-        </b></p>
-        <p>
-            Your response goes here.
-        </p>
-        <br>
-
 
         <h3 align="middle">Part 2. Microfacet Material</h3>
         <p><b>
