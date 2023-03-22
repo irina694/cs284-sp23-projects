@@ -65,16 +65,12 @@
 <div class="padded">
     <h2 align="middle">Overview</h2>
     <p>
-        In this project, we implemented advanced features for PathTracer, including  Bidirectional Scattering Distribution Functions (BSDF) for various materials, such as glass and mirror. We implemented Parts 1 and 2. The details of each part are below.
+        In this project, we implemented advanced features for PathTracer, including  Bidirectional Scattering Distribution Functions (BSDF) for various materials, such as glass and mirror (Part 1), and the Microfacet model for isotropic rough conductors that reflect (Part 2). We implemented Parts 1 and 2. The details of each part are below.
     </p>
 </div>
 
 
     <div class="padded">
-
-        
-        * NOTE: For this project, you will choose TWO out of the four given parts to complete. One of those parts must be Part 1 or Part 2. In other words, you can choose any combination of two parts except the pair (Part 3, Part 4).
-
 
         <h3 align="middle">Part 1. Mirror and Glass Materials</h3>
 
@@ -123,52 +119,69 @@
 		
 		<div align="middle">
 			<table style="width:100%">
-				<tr align="center">
-					<img src="./images/CBspheres_m100.png" align="middle" width="50%;" />
-					<figcaption align="middle"><code>CBspheres.dae</code> with m = 100.</figcaption>
-				</tr>
-				<tr align="center">
+
+                <tr align="center">
+                    <td>
+                        <img src="./images/CBspheres_m0.png" align="middle" width="75%;" />
+                        <figcaption align="middle"><code>CBspheres.dae</code> with m = 0.</figcaption>
+                    </td>
+                    <td>
+                        <img src="./images/CBspheres_m1.png" align="middle" width="75%;" />
+                        <figcaption align="middle"><code>CBspheres.dae</code> with m = 1.</figcaption>
+                    </td>
+                </tr>
+
+                <tr align="center">
+                    <td>
+                        <img src="./images/CBspheres_m2.png" align="middle" width="75%;" />
+                        <figcaption align="middle"><code>CBspheres.dae</code> with m = 2.</figcaption>
+                    </td>
+                    <td>
+                        <img src="./images/CBspheres_m3.png" align="middle" width="75%;" />
+                        <figcaption align="middle"><code>CBspheres.dae</code> with m = 3.</figcaption>
+                    </td>
+                </tr>
+
+
+                <tr align="center">
+                    <td>
+                        <img src="./images/CBspheres_m4.png" align="middle" width="75%;" />
+                        <figcaption align="middle"><code>CBspheres.dae</code> with m = 4.</figcaption>
+                    </td>
 					<td>
 						<img src="./images/CBspheres_m5.png" align="middle" width="75%;" />
 						<figcaption align="middle"><code>CBspheres.dae</code> with m = 5.</figcaption>
 					</td>
-					<td>
-						<img src="./images/CBspheres_m4.png" align="middle" width="75%;" />
-						<figcaption align="middle"><code>CBspheres.dae</code> with m = 4.</figcaption>
-					</td>
+
 				</tr>
-				<tr align="center">
-					<td>
-						<img src="./images/CBspheres_m3.png" align="middle" width="75%;" />
-						<figcaption align="middle"><code>CBspheres.dae</code> with m = 3.</figcaption>
-					</td>
-					<td>
-						<img src="./images/CBspheres_m2.png" align="middle" width="75%;" />
-						<figcaption align="middle"><code>CBspheres.dae</code> with m = 2.</figcaption>
-					</td>
-				</tr>
-				<tr align="center">
-					<td>
-						<img src="./images/CBspheres_m1.png" align="middle" width="75%;" />
-						<figcaption align="middle"><code>CBspheres.dae</code> with m = 1.</figcaption>
-					</td>
-					<td>
-						<img src="./images/CBspheres_m0.png" align="middle" width="75%;" />
-						<figcaption align="middle"><code>CBspheres.dae</code> with m = 0.</figcaption>
-					</td>
-				</tr>
+
+                <tr align="center">
+                    <td>
+                        <img src="./images/CBspheres_m100.png" align="middle" width="75%;" />
+                        <figcaption align="middle"><code>CBspheres.dae</code> with m = 100.</figcaption>
+                    </td>
+                </tr>
 			</table>
 		</div>
 		
         <p>
-            All CBspheres.dae rendered with -s 128 and -l 8.
-			<br> At m = 0, only <code>zero_bounce_radiance</code> is counted, so only the light is sampled.
-			<br>Similarly, when m = 1, only <code>one_bounce_radiance</code> is counted, so the mirror and glass balls don't have a change to reflect or refract any rays, leading to their black appearance, except for the small portion which directly reflects the light.
-			<br>We can see that reflections of the room appear at m = 2, with the perfect mirror ball showing a much brighter reflection than the glass ball. Some of the limits of 2 bounces include the refracted rays in the glass ball not being able to reach any form of light, and the reflections in the mirror ball of the roof and glass ball similarly not being able to reach a light source within the small number of bounces.
-			<br>At m = 3, the glass ball's refracted rays are able to exit the other side, leading to a transparent object, and the reflection of the roof in the mirror ball is now lit. The refracted light in the glass ball also now casts a concentrated bright spot on the floor.
-			<br>At m = 4, this concentrated spot is now reflected onto the right wall. The reflection of the glass ball in the mirror ball is also now visible.
-			<br>At m = 5, there aren't any noticeable changes, and this is also true for m = 100. m = 4 is roughly the sweet spot where all the elements appear to be rendering properly.
+            All CBspheres.dae rendered with <code>-s</code> 128 and <code>-l</code> 8.
         </p>
+        <p>At m = 0, only <code>zero_bounce_radiance</code> is counted, so only the light is sampled.</p>
+
+        <p>Similarly, when m = 1, only <code>one_bounce_radiance</code> is counted, so the mirror and glass balls don't have a change to reflect or refract any rays, leading to their black appearance, except for the small portion which directly reflects the light.</p>
+
+        <p>We can see that reflections of the room appear at m = 2, with the perfect mirror ball showing a much brighter reflection than the glass ball. Some of the limits of 2 bounces include the refracted rays in the glass ball not being able to reach any form of light, and the reflections in the mirror ball of the roof and glass ball similarly not being able to reach a light source within the small number of bounces.</p>
+
+        <p>At m = 3, the glass ball's refracted rays are able to exit the other side, leading to a transparent object, and the reflection of the roof in the mirror ball is now lit. The refracted light in the glass ball also now casts a concentrated bright spot on the floor.</p>
+
+        <p>At m = 4, this concentrated spot is now reflected onto the right wall. The reflection of the glass ball in the mirror ball is also now visible.</p>
+
+        <p>At m = 5, the reflected image in the mirror sphere is becoming brighter, but the overall appearance is similar to the image at m = 4.  There aren't many differences between m = 4 and m = 5. As a tradeoff between speed and accuracy, we thought m = 4 is roughly the sweet spot where all the elements appear to be rendering properly.
+        </p>
+
+        <p>At m = 100, the reflected image in the image sphere is even brighter, especially the ceiling reflected in the mirror sphere.</p>
+
         <br>
 
         <h3 align="middle">Part 2. Microfacet Material</h3>
