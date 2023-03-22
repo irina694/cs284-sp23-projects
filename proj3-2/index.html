@@ -1,7 +1,232 @@
-<html>
-	<head>
-	</head>
-	<body>
-		Project 3-2 here
-	</body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>
+    body {
+        background-color: white;
+        padding: 15%;
+        width: 70%;
+        min-width: 70%;
+        float: left;
+        margin: auto;
+        text-align: left;
+        font-weight: 300;
+        font-family: 'Open Sans', sans-serif;
+        color: #121212;
+    }
+
+    div.padded {
+        padding-top: 0px;
+        padding-right: 10%;
+        padding-bottom: 0.5em;
+        padding-left: 10%;
+    }
+
+    .emphasis {
+        text-decoration: underline;
+    }
+
+
+    h1, h2, h3, h4 {
+        font-family: 'Source Sans Pro', sans-serif;
+    }
+
+    kbd {
+        color: #121212;
+    }
+  </style> 
+<title>CS 284A: Pathtracer 2</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+    </script>
+</head>
+<body>
+<br />
+<h1 align="middle">Assignment 3-2: Additional Features to PathTracer</h1>
+    <h2 align="middle">IRINA HALLINAN & CECIL SYMES</h2>
+<h3 align="middle">Website URL: <a href="https://irina694.github.io/cs284-sp23-projects/proj3-2/">https://irina694.github.io/cs284-sp23-projects/proj3-2</a>
+</h3>
+
+<br>
+<br>
+
+<div class="padded">
+    <h2 align="middle">Overview</h2>
+    <p>
+        In this project, we implemented advanced features for PathTracer, including  Bidirectional Scattering Distribution Functions (BSDF) for various materials, such as glass and mirror. We implemented Parts 1 and 2. The details of each part are below.
+    </p>
+</div>
+
+
+    <div class="padded">
+
+        
+        * NOTE: For this project, you will choose TWO out of the four given parts to complete. One of those parts must be Part 1 or Part 2. In other words, you can choose any combination of two parts except the pair (Part 3, Part 4).
+
+
+        <h3 align="middle">Part 1. Mirror and Glass Materials</h3>
+
+        <p>In Part 1, we implemented mirror and glass material Bidirectional Scattering Distribution Functions (BSDF), which made it possible to render scenes containing objects with these materials. For mirror materials, the probability density function (PDF) is set to 1. In the <code>sample_f</code> function, we return the direction of the reflected ray by setting its <code>x</code> to <code>-x</code>, its <code>y</code> to <code>-y</code> and keeping the same <code>z</code> because the ray is in the local object coordinate system, where the intersection point is the origin <code>(0, 0, 0)</code> and the <code>z</code> direction is the direction of the normal.</p>
+
+        <p>For refracted materials, the probability density function (PDF) is also set to 1. In the <code>sample_f</code> function, we return the direction of the refracted ray by using Snell's Law. The ray may not refract at all due to the Total Internal Reflection.</p>
+
+        <p>The incoming ray may be entering from air into the material, or coming from the material and entering air. Depending on which one of the two cases the ray is, we calculate the ratio <code>eta</code> of the old index of refraction (<code>ior</code>) to the new index of refraction. The image below shows the diagram of the two cases when the ray is entering or exiting a non-air material. The air index of refraction is 1.0. </p>
+
+        <div align="center">
+            <img src="./images/part1-task3.png" align="middle" width="75%;" />
+            <figcaption align="middle">The formula to find the ratio <code>eta</code>. Credit: <a href="https://cs184.eecs.berkeley.edu/sp23/docs/proj3-2-part-1" target="_blank">Project 3-2 Part 1 Spec</a>.</figcaption>
+        </div>
+
+        <p>Glass material is made by combining reflection and refraction code. We used Schlick's approximation to decide what the ratio of reflection to refraction should be for each ray. If the ray does get refracted, than we probabilistically either reflect it or refract it, according to the Schlick's formula, shown below.</p>
+
+        <div align="center">
+            <img src="./images/part1-task4-formula.png" align="middle" width="75%;" />
+            <figcaption align="middle">The formula to find the reflection coefficient <code>R</code>. Credit: <a href="https://en.wikipedia.org/wiki/Schlick's_approximation" target="_blank">Wikipedia</a>.</figcaption>
+        </div>
+
+        <p>Below are the example images rendered after glass and mirror BSDF are implemented. The image <code>CBdragon.dae</code> contains mirror only, the image <code>CBlucy.dae</code> contains glass only, and the image <code>CBspheres.dae</code> contains both mirror and glass. Three images below are rendered with using 256 samples per pixel, 4 light rays per pixel, maximum ray depth of 7, and a resolution of 480 by 360 pixels.</p>
+
+        <div align="center">
+            <img src="./images/CBdragon_s256_l4_m7_480x360.png" align="middle" width="75%;" />
+            <figcaption align="middle">The <code>CBdragon.dae</code> contains mirror material only.</figcaption>
+        </div>
+
+        <br>
+        
+        <div align="center">
+            <img src="./images/CBlucy_s256_l4_m7_480x360.png" align="middle" width="75%;" />
+            <figcaption align="middle">The <code>CBlucy.dae</code> contains glass material only.</figcaption>
+        </div>
+
+        <br>
+
+        <div align="center">
+            <img src="./images/CBspheres_s256_l4_m7_480x360.png" align="middle" width="75%;" />
+            <figcaption align="middle">The <code>CBspheres.dae</code> contains mirror and glass materials .</figcaption>
+        </div>
+
+        <p><b>
+            Show a sequence of six images of scene `CBspheres.dae` rendered with `max_ray_depth` set to 0, 1, 2, 3, 4, 5, and 100. The other settings should be at least 64 samples per pixel and 4 samples per light. Make sure to include all screenshots.
+        </b></p>
+        <p>
+            Your response goes here.
+        </p>
+        <br>
+        <p><b>
+            Point out the new multibounce effects that appear in each image. 
+        </b></p>
+        <p>
+            Your response goes here.
+        </p>
+        <br>
+        <p><b>
+            Explain how these bounce numbers relate to the particular effects that appear. Make sure to include all screenshots.
+        </b></p>
+        <p>
+            Your response goes here.
+        </p>
+        <br>
+
+
+        <h3 align="middle">Part 2. Microfacet Material</h3>
+        <p><b>
+            Show a screenshot sequence of 4 images of scene `CBdragon_microfacet_au.dae` rendered with $\alpha$ set to 0.005, 0.05, 0.25 and 0.5. The other settings should be at least 128 samples per pixel and 1 samples per light. The number of bounces should be at least 5. Describe the differences between different images. Note that, to change the $\alpha$, just open the .dae file and search for `microfacet`.
+        </b></p>
+        <p>
+            Your response goes here.
+        </p>
+        <br>
+        <p><b>
+            Show two images of scene `CBbunny_microfacet_cu.dae` rendered using cosine hemisphere sampling (default) and your importance sampling. The sampling rate should be fixed at 64 samples per pixel and 1 samples per light. The number of bounces should be at least 5. Briefly discuss their difference.
+        </b></p>
+        <p>
+            Your response goes here.
+        </p>
+        <br>
+        <p><b>
+            Show at least one image with some other conductor material, replacing `eta` and `k`. Note that you should look up values for real data rather than modifying them arbitrarily. Tell us what kind of material your parameters correspond to. 
+        </b></p>
+        <p>
+            Your response goes here.
+        </p>
+        <br>
+        
+        
+        
+
+        <h3 align="middle">Part 3. Environment Lightl</h3>
+        <b>Pick one *.exr* file to use for all subparts here. Include a converted *.jpg* of it in your website so we know what map you are using.</b>
+        
+        <p><b>
+            In a few sentences, explain the ideas behind environment lighting (i.e. why we do it/how it works).
+        </b></p>
+        <p>
+            Your response goes here.
+        </p>
+        <br>
+        <p><b>
+            Show the *probability_debug.png* file for the *.exr* file you are using, generated using the `save_probability_debug()` helper function after initializing your probability distributions.
+        </b></p>
+        <p>
+            Your response goes here.
+        </p>
+        <br>
+        <p><b>
+            Use the `bunny_unlit.dae` scene and your environment map *.exr* file and render two pictures, one with uniform sampling and one with importance sampling. Use 4 samples per pixel and 64 samples per light in each. Compare noise levels. Make sure to include all screenshots.
+        </b></p>
+        <p>
+            Your response goes here.
+        </p>
+        <br>
+        <p><b>
+            Use a different image (if you did part 2, we recommend `bunny_microfacet_cu_unlit.dae`) and your environment map *.exr* file and render two pictures, one with uniform sampling and one with importance sampling. Use 4 samples per pixel and 64 samples per light in each. Compare noise levels. Make sure to include all screenshots.
+        </b></p>
+        <p>
+            Your response goes here.
+        </p>
+        <br>
+
+
+
+        <h3 align="middle">Part 4. Depth of Field</h3>
+        <b>
+            For these subparts, we recommend using a microfacet BSDF scene to show off the cool out of focus effects you can get with depth of field!
+        </b>
+        <p><b>
+            In a few sentences, explain the differences between a pinhole camera model and a thin-lens camera model. 
+        </b></p>
+        <p>
+            Your response goes here.
+        </p>
+        <br>
+        <p><b>
+            Show a "focus stack" where you focus at 4 visibly different depths through a scene. Make sure to include all screenshots.
+        </b></p>
+        <p>
+            Your response goes here.
+        </p>
+        <br>
+        <p><b>
+            Show a sequence of 4 pictures with visibly different aperture sizes, all focused at the same point in a scene. Make sure to include all screenshots.
+        </b></p>
+        <p>
+            Your response goes here.
+        </p>
+        <br>
+
+    </div>
+</body>
 </html>
+
