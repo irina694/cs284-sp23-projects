@@ -65,7 +65,7 @@
 <div class="padded">
     <h2 align="middle">Overview</h2>
     <p>
-        In this project, we implemented advanced features for PathTracer, including  Bidirectional Scattering Distribution Functions (BSDF) for various materials, such as glass and mirror (Part 1), and the Microfacet model for isotropic rough conductors that reflect (Part 2). We implemented Parts 1 and 2. The details of each part are below.
+        In this project, we implemented advanced features for PathTracer, including  Bidirectional Scattering Distribution Functions (BSDF) for various materials, such as glass and mirror (Part 1), and the Microfacet model for isotropic rough conductors that reflect but not refract (Part 2). We implemented only Parts 1 and 2. We didn't implement Parts 3 and 4. The details of each implemented part are below. We used the provided binaries for code implemented in Project 3-1.
     </p>
 </div>
 
@@ -85,7 +85,7 @@
             <figcaption align="middle">The formula to find the ratio <code>eta</code>. Credit: <a href="https://cs184.eecs.berkeley.edu/sp23/docs/proj3-2-part-1" target="_blank">Project 3-2 Part 1 Spec</a>.</figcaption>
         </div>
 
-        <p>Glass material is made by combining reflection and refraction code. We used Schlick's approximation to decide what the ratio of reflection to refraction should be for each ray. If the ray does get refracted, than we probabilistically either reflect it or refract it, according to the Schlick's formula, shown below.</p>
+        <p>Glass material is made by combining reflection and refraction code. We used Schlick's approximation to decide what the ratio of reflection to refraction should be for each ray. If the ray does get refracted, then we probabilistically either reflect it or refract it, according to the Schlick's formula, shown below.</p>
 
         <div align="center">
             <img src="./images/part1-task4-formula.png" align="middle" width="75%;" />
@@ -177,67 +177,111 @@
 
         <p>At m = 4, this concentrated spot is now reflected onto the right wall. The reflection of the glass ball in the mirror ball is also now visible.</p>
 
-        <p>At m = 5, the reflected image in the mirror sphere is becoming brighter, but the overall appearance is similar to the image at m = 4.  There aren't many differences between m = 4 and m = 5. As a tradeoff between speed and accuracy, we thought m = 4 is roughly the sweet spot where all the elements appear to be rendering properly.
+        <p>At m = 5, the reflected image in the mirror sphere is becoming brighter, but the overall appearance is similar to the image at m = 4.  There aren't many differences between m = 4 and m = 5.
         </p>
 
-        <p>At m = 100, the reflected image in the image sphere is even brighter, especially the ceiling reflected in the mirror sphere.</p>
+        <p>At m = 100, the reflected ceiling image in the mirror sphere is even brighter, since more light rays bounce off and the color of each reflected pixel is close to its true color (white). However, other details closely resemble what the image looks like at m = 4 or m = 5.</p>
+
+        <p>As a tradeoff between speed and accuracy, we thought m = 4 is roughly the sweet spot where all the elements appear to be rendering properly.</p>
 
         <br>
 
         <h3 align="middle">Part 2. Microfacet Material</h3>
+
+        <p>In Part 2, we implemented the microfacet BSDF. The Microfacet model represents rough surfaces on a small scale that are treated like reflective mirrors. If the surface has a lot of reflective micro surfaces or bumps, then it will be mostly specular on a macro-level. If, on the other hand, the reflective micro surfaces are distributed throughout the object and these micro surfaces are not concentrated, then the object will appear to be diffuse. What makes a difference in material appearance is the distribution of micro-surfaces normals.</p>
+
+        <p>We use the formula below to compute the Microfacet BSDF.</p>
+
+
+        <div width="100%;">
+            <img style="margin-left:25%;" src="./images/p2_formula.png" align="middle" width="50%;" />
+            <figcaption align="middle">Microfacet BSDF</figcaption>
+        </div>
+
+        <p>Where <code>F</code> is the Fresnel term, <code>G</code> is the shadowing-masking term, <code>D</code>is the normal distribution function (NDF), <code>n</code> is the macro surface normal, which is always <code>(0, 0, 1)</code> in object coordinate system, and <code>h</code> is a half vector.</p>
+
+        <p>We implemented each of the terms above, in turn. For the Normal Distribution Function (NDF), we used the Beckmann distribution. The NDF is defined by the formula below.</p>
+
+        <div width="100%;">
+            <img style="margin-left:25%;" src="./images/p2_t2.png" align="middle" width="50%;" />
+            <figcaption align="middle">Normal Distribution Function (NDF) using Beckmann distribution.</figcaption>
+        </div>
+
+        <p>where $\alpha$ is the roughness of the macro surface, $\theta$  is the angle between the half vector $\\h$  and the macro surface normal $\\n$ . The $\alpha$  is a measure of smoothness. The smaller the  $\alpha$  the smoother the material, so it will appear glossy and shiny like metal.</p>
+
+
         <p><b>
-            <i>Show a screenshot sequence of 4 images of scene `CBdragon_microfacet_au.dae` rendered with $\alpha$ set to 0.005, 0.05, 0.25 and 0.5. The other settings should be at least 128 samples per pixel and 1 samples per light. The number of bounces should be at least 5. Describe the differences between different images. Note that, to change the $\alpha$, just open the .dae file and search for `microfacet`.</i>
+            <i>Show a screenshot sequence of 4 images of scene <code>CBdragon_microfacet_au.dae</code> rendered with $\alpha$ set to 0.005, 0.05, 0.25 and 0.5. The other settings should be at least 128 samples per pixel and 1 samples per light. The number of bounces should be at least 5. Describe the differences between different images. Note that, to change the $\alpha$, just open the .dae file and search for <code>microfacet</code>.</i>
         </b></p>
+
+        <p>The four images below were generated by modifying <code>CBdragon_microfacet_au.dae</code> to set the $\alpha$ values from 0.005 to 0.5, and using 256 samples per pixel, 4 sample per light, 7 maximum ray depth, and a resolution of 480 x 360 pixels.</p>
 		
 		<div align="middle">
 			<table style="width:100%">
+                <tr align="center">
+                    <td>
+                        <img src="./images/CBdragon_microfacet_au_0.005_s256.png" align="middle" width="90%;" />
+                        <figcaption align="middle">$\alpha$ = 0.005</figcaption>
+                    </td>
+                    <td>
+                        <img src="./images/CBdragon_microfacet_au_0.05_s256.png" align="middle" width="90%;" />
+                        <figcaption align="middle">$\alpha$ = 0.05</figcaption>
+                    </td>
+
+                </tr>
 				<tr align="center">
+
 					<td>
-						<img src="./images/CBdragon_alpha_0.5.png" align="middle" width="75%;" />
-						<figcaption align="middle"><code>CBdragon_microfacet_au.dae</code> with $\alpha$ = 0.5.</figcaption>
+						<img src="./images/CBdragon_microfacet_au_0.25_s256.png" align="middle" width="90%;" />
+						<figcaption align="middle">$\alpha$ = 0.25</figcaption>
 					</td>
-					<td>
-						<img src="./images/CBdragon_alpha_0.25.png" align="middle" width="75%;" />
-						<figcaption align="middle"><code>CBdragon_microfacet_au.dae</code> with $\alpha$ = 0.25.</figcaption>
-					</td>
+                    <td>
+                        <img src="./images/CBdragon_microfacet_au_0.5_s256.png" align="middle" width="90%;" />
+                        <figcaption align="middle">$\alpha$ = 0.5</figcaption>
+                    </td>
 				</tr>
-				<tr align="center">
-					<td>
-						<img src="./images/CBdragon_alpha_0.05.png" align="middle" width="75%;" />
-						<figcaption align="middle"><code>CBdragon_microfacet_au.dae</code> with $\alpha$ = 0.05.</figcaption>
-					</td>
-					<td>
-						<img src="./images/CBdragon_alpha_0.005.png" align="middle" width="75%;" />
-						<figcaption align="middle"><code>CBdragon_microfacet_au.dae</code> with $\alpha$ = 0.005.</figcaption>
-					</td>
-				</tr>
+
 			</table>
 		</div>
 		
         <p>
-		WORDS
+		The smallest value of $\alpha$ produces the smoothest, most glossy image of the dragon. The reflections of the room, including the black background can be seen reflected in the lower portion of the dragon's neck. The specular reflections can be seen in the tail underneath the light. The overall image has more grainy pixels scattered throughout the image because of the light rays reflecting off the shiny dragon.
+        </p>
+
+        <p>
+            When $\alpha$ is 0.05 (ten times larger than before), the dragon appears shiny, but not as shiny as when $\alpha$ is 0.005. For example, the reflections of the light are not as pronounced, which makes sense because the larger $\alpha$ means a more diffuse material.
+        </p>
+
+        <p>
+            When $\alpha$ is 0.25, the dragon appears slightly shiny, but almost no room background can be seen reflected. The material scatters light in a more diffuse or uniform manner.
+        </p>
+
+        <p>
+            The largest $\alpha$ of 0.5 produces the most diffuse dragon, which appears almost matte, where the body of the dragon does not reflect light outside the room as it did for smaller values of $\alpha$. This image overall looks the smoothest, in terms of pixel values. There are almost no random grainy artifacts that can be seen in the images with small $\alpha$ values.
         </p>
 		
         <br>
         <p><b>
             <i>Show two images of scene `CBbunny_microfacet_cu.dae` rendered using cosine hemisphere sampling (default) and your importance sampling. The sampling rate should be fixed at 64 samples per pixel and 1 samples per light. The number of bounces should be at least 5. Briefly discuss their difference.</i>
         </b></p>
+
+        <p>The two images below of <code>CBbunny_microfacet_cu.dae</code> were rendered  using 64 samples per pixel, 1 samples of light, 5 maximum ray depth, and a resolution of 480 x 360 pixels.</p>
 		
 		<div align="middle">
 			<table style="width:100%">
 				<td>
 					<img src="./images/CBbunny_importance.png" align="middle" width="90%;" />
-					<figcaption align="middle"><code>CBbunny_microfacet_cu.dae</code> with Importance Sampling.</figcaption>
+					<figcaption align="middle">Importance Sampling</figcaption>
 				</td>
 				<td>
 					<img src="./images/CBbunny_uniform.png" align="middle" width="90%;" />
-					<figcaption align="middle"><code>CBbunny_microfacet_cu.dae</code> with Uniform Sampling.</figcaption>
+					<figcaption align="middle">Uniform Sampling</figcaption>
 				</td>
 			</table>
 		</div>
 		
         <p>
-            WORDS AGAIN
+            At each pixel, the uniform sampling randomly sends a ray chosen from a hemisphere around the pixel. Therefore, most rays randomly created don't hit the light source. As a result, the image with uniform sampling looks a lot darker and grainer than the image using importance sampling. The reflective parts of the bunny with uniform sampling especially look dark and grainy  because the chances that the ray from the camera hits the bunny, reflects and hits the light is a lot smaller when the direction of each ray is chosen randomly. That results in many dark pixels, that bounce off the bunny but don't hit the light. In contrast, in importance sampling, each light ray through a pixel is chosen to originate on the light source. If that ray has an intersection at the pixel, then the total radiance of the light will be added. As a consequence, the image looks brighter and less grainer, with reflective parts mirroring the dark background.
         </p>
         <br>
 		
@@ -251,8 +295,8 @@
 		</div>
 		
         <p>
-            Manganese. n is eta (weird greek letter) in the code, k is k in the code.
-			These values I yoinked from the refractive index website they linked in the spec. I replaced the values in the code with the ones below:
+            The image above uses manganese as a conductor material. n is eta in the code, k is k in the code.
+			These values come from the refractive index <a href="https://refractiveindex.info/" target="_blank">website</a> linked in the spec. We replaced the following values in the code:
 			<br>@ 614nm (red): n = 2.5066, k = 3.5306
 			<br>@ 549nm (green): n = 2.39, k = 3.33
 			<br>@ 466nm (blue): n = 2.17, k = 3.04
@@ -260,64 +304,74 @@
         <br>
 
         <h3 align="middle">Part 3. Environment Light</h3>
-        <b>Pick one *.exr* file to use for all subparts here. Include a converted *.jpg* of it in your website so we know what map you are using.</b>
-        
-        <p><b>
-            In a few sentences, explain the ideas behind environment lighting (i.e. why we do it/how it works).
-        </b></p>
-        <p>
-            Your response goes here.
-        </p>
-        <br>
-        <p><b>
-            Show the *probability_debug.png* file for the *.exr* file you are using, generated using the `save_probability_debug()` helper function after initializing your probability distributions.
-        </b></p>
-        <p>
-            Your response goes here.
-        </p>
-        <br>
-        <p><b>
-            Use the `bunny_unlit.dae` scene and your environment map *.exr* file and render two pictures, one with uniform sampling and one with importance sampling. Use 4 samples per pixel and 64 samples per light in each. Compare noise levels. Make sure to include all screenshots.
-        </b></p>
-        <p>
-            Your response goes here.
-        </p>
-        <br>
-        <p><b>
-            Use a different image (if you did part 2, we recommend `bunny_microfacet_cu_unlit.dae`) and your environment map *.exr* file and render two pictures, one with uniform sampling and one with importance sampling. Use 4 samples per pixel and 64 samples per light in each. Compare noise levels. Make sure to include all screenshots.
-        </b></p>
-        <p>
-            Your response goes here.
-        </p>
-        <br>
+        <p>We didn't implement Part 3.</p>
+<!--        <b>Pick one *.exr* file to use for all subparts here. Include a converted *.jpg* of it in your website so we know what map you are using.</b>-->
+<!--        -->
+<!--        <p><b>-->
+<!--            In a few sentences, explain the ideas behind environment lighting (i.e. why we do it/how it works).-->
+<!--        </b></p>-->
+<!--        <p>-->
+<!--            Your response goes here.-->
+<!--        </p>-->
+<!--        <br>-->
+<!--        <p><b>-->
+<!--            Show the *probability_debug.png* file for the *.exr* file you are using, generated using the `save_probability_debug()` helper function after initializing your probability distributions.-->
+<!--        </b></p>-->
+<!--        <p>-->
+<!--            Your response goes here.-->
+<!--        </p>-->
+<!--        <br>-->
+<!--        <p><b>-->
+<!--            Use the `bunny_unlit.dae` scene and your environment map *.exr* file and render two pictures, one with uniform sampling and one with importance sampling. Use 4 samples per pixel and 64 samples per light in each. Compare noise levels. Make sure to include all screenshots.-->
+<!--        </b></p>-->
+<!--        <p>-->
+<!--            Your response goes here.-->
+<!--        </p>-->
+<!--        <br>-->
+<!--        <p><b>-->
+<!--            Use a different image (if you did part 2, we recommend `bunny_microfacet_cu_unlit.dae`) and your environment map *.exr* file and render two pictures, one with uniform sampling and one with importance sampling. Use 4 samples per pixel and 64 samples per light in each. Compare noise levels. Make sure to include all screenshots.-->
+<!--        </b></p>-->
+<!--        <p>-->
+<!--            Your response goes here.-->
+<!--        </p>-->
+<!--        <br>-->
 
 
 
         <h3 align="middle">Part 4. Depth of Field</h3>
-        <b>
-            For these subparts, we recommend using a microfacet BSDF scene to show off the cool out of focus effects you can get with depth of field!
-        </b>
-        <p><b>
-            In a few sentences, explain the differences between a pinhole camera model and a thin-lens camera model. 
-        </b></p>
-        <p>
-            Your response goes here.
-        </p>
+        <p>We didn't implement Part 4.</p>
+<!--        <b>-->
+<!--            For these subparts, we recommend using a microfacet BSDF scene to show off the cool out of focus effects you can get with depth of field!-->
+<!--        </b>-->
+<!--        <p><b>-->
+<!--            In a few sentences, explain the differences between a pinhole camera model and a thin-lens camera model. -->
+<!--        </b></p>-->
+<!--        <p>-->
+<!--            Your response goes here.-->
+<!--        </p>-->
+<!--        <br>-->
+<!--        <p><b>-->
+<!--            Show a "focus stack" where you focus at 4 visibly different depths through a scene. Make sure to include all screenshots.-->
+<!--        </b></p>-->
+<!--        <p>-->
+<!--            Your response goes here.-->
+<!--        </p>-->
+<!--        <br>-->
+<!--        <p><b>-->
+<!--            Show a sequence of 4 pictures with visibly different aperture sizes, all focused at the same point in a scene. Make sure to include all screenshots.-->
+<!--        </b></p>-->
+<!--        <p>-->
+<!--            Your response goes here.-->
+<!--        </p>-->
+<!--        <br>-->
+
         <br>
-        <p><b>
-            Show a "focus stack" where you focus at 4 visibly different depths through a scene. Make sure to include all screenshots.
-        </b></p>
-        <p>
-            Your response goes here.
-        </p>
-        <br>
-        <p><b>
-            Show a sequence of 4 pictures with visibly different aperture sizes, all focused at the same point in a scene. Make sure to include all screenshots.
-        </b></p>
-        <p>
-            Your response goes here.
-        </p>
-        <br>
+        <hr>
+
+        <p>This project was a team effort. We worked on each part by ourselves first, then met to discuss the solution. When didn't encountered any severe bugs in this project. In the end, we each worked on all parts of the project, either as the main author or as a debugger or as a co-author of the write-up. If one of us coded more of the implementation for a certain part or function, we alternated the writeup, so that the person who didn't write the bulk of the code could have a chance to read through and understand the code. Overall, it was rewarding to see pretty pictures of interesting materials.</p>
+
+        <h3 align="middle">Website URL: <a href="https://irina694.github.io/cs284-sp23-projects/proj3-2/">https://irina694.github.io/cs284-sp23-projects/proj3-2</a>
+
 
     </div>
 </body>
